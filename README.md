@@ -1,26 +1,20 @@
-# [Start Bootstrap](http://startbootstrap.com/) - [Freelancer](http://startbootstrap.com/template-overviews/freelancer/)
+# Bootstrap jQuery Mobile Theme
 
-[Freelancer](http://startbootstrap.com/template-overviews/freelancer/) is a one page freelancer portfolio theme for [Bootstrap](http://getbootstrap.com/) created by [Start Bootstrap](http://startbootstrap.com/). This theme features several content sections, a responsive portfolio grid with hover effects, full page portfolio item modals, and a working PHP contact form.
+A jQuery Mobile theme based on Bootstrap.
 
-## Getting Started
+The title says it all. I thought it would be a fun project to build out a jQuery Mobile theme emulating everyone's favorite hotness, the Bootstrap UI library. It's not a perfect translation of course, but consider it a work in progress.
 
-To use this theme, choose one of the following options to get started:
-* Download the latest release on Start Bootstrap
-* Fork this repository on GitHub
+This theme overrides the existing jQuery Mobile A - E swatches (and adds an F swatch as well) with colors and styles found in Bootstrap. It's meant to be used with A as the primary swatch for the page, and B - F as accents as needed.
 
-## Bugs and Issues
+Make your Bootstrap theme complete by using Font Awesome icons found in the [jQuery Mobile Icon Pack](https://github.com/commadelimited/jQuery-Mobile-Icon-Pack).
 
-Have a bug or an issue with this theme? [Open a new issue](https://github.com/IronSummitMedia/startbootstrap-freelancer/issues) here on GitHub or leave a comment on the [template overview page at Start Bootstrap](http://startbootstrap.com/template-overviews/freelancer/).
+**Updated for jQuery Mobile 1.4!
 
-## Creator
+## Example
 
-Start Bootstrap was created by and is maintained by **David Miller**, Managing Parter at [Iron Summit Media Strategies](http://www.ironsummitmedia.com/).
+[View a simple demo of this theme](http://andymatthews.net/code/jQuery-Mobile-Bootstrap-Theme/)
 
-* https://twitter.com/davidmillerskt
-* https://github.com/davidtmiller
+![Swatches A - C](http://andymatthews.net/code/jQuery-Mobile-Bootstrap-Theme/swatches-A-C.png?)
+![Swatches D - F](http://andymatthews.net/code/jQuery-Mobile-Bootstrap-Theme/swatches-D-F.png?)
 
-Start Bootstrap is based on the [Bootstrap](http://getbootstrap.com/) framework created by [Mark Otto](https://twitter.com/mdo) and [Jacob Thorton](https://twitter.com/fat).
-
-## Copyright and License
-
-Copyright 2013-2015 Iron Summit Media Strategies, LLC. Code released under the [Apache 2.0](https://github.com/IronSummitMedia/startbootstrap-freelancer/blob/gh-pages/LICENSE) license.
+[![Bitdeli Badge](https://d2weczhvl823v0.cloudfront.net/commadelimited/jquery-mobile-bootstrap-theme/trend.png)](https://bitdeli.com/free "Bitdeli Badge")
