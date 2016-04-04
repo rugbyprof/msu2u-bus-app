@@ -57,6 +57,18 @@
                 addHeader();
             }
             function startTracking() {
+            	
+            	$.post( "backend.php", { 
+            		lat: "33.45", 
+            		lon: "-97.50", 
+            		command: 'update_driver',
+            		time:new Date().getTime() 
+            		
+            	})
+  			.done(function( data ) {
+    			console.log( "Data Loaded: " + data );
+  		});
+            	
                 track = true;
                 addHeader();
                 navigator.geolocation.watchPosition(
