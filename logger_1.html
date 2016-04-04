@@ -58,16 +58,7 @@
             }
             function startTracking() {
             	
-            	$.post( "backend.php", { 
-            		lat: "33.45", 
-            		lon: "-97.50", 
-            		command: 'driver_location',
-            		time:new Date().getTime() 
-            		
-            	})
-  			.done(function( data ) {
-    			console.log( "Data Loaded: " + data );
-  		});
+
             	
                 track = true;
                 addHeader();
@@ -80,6 +71,16 @@
                             lt = now;
                             ls = 1;
                         }
+	            	$.post( "backend.php", { 
+	            		lat: "33.45", 
+	            		lon: "-97.50", 
+	            		command: 'driver_location',
+	            		time:new Date().getTime() 
+	            		
+	            	})
+	  			.done(function( data ) {
+	    			console.log( "Data Loaded: " + data );
+	  		});
                     },
                     function() {
                         var now = new Date().getTime();
