@@ -12,7 +12,7 @@ switch($command){
     case 'driver_location': 
         $json = update_driver_location($lat,$lon,$time); 
         break;
-    case default:
+    default:
         $json = array('error'=>'command not found');
 }
 
