@@ -20,5 +20,5 @@ switch($command){
 echo json_encode($json);
 
 function update_driver_location($link,$lat,$lon,$time){
-
+    return array('success'=>'you id it');
 }
