@@ -17,6 +17,7 @@ switch($command){
         $json = array('error'=>'command not found');
 }
 
+echo json_encode($json);
 
 function update_driver_location($link,$lat,$lon,$time){
 
