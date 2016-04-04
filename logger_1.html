@@ -65,7 +65,7 @@
                 navigator.geolocation.watchPosition(
                     function(position) {
                         var now = new Date().getTime();
-                        if (ls != 1 || now - lt > 10000) {
+                        if (ls != 1 || now - lt > 5000) {
                             ta.value += now + ' // ' + position.coords.latitude + ' // ' + position.coords.longitude + '\n';
                             localStorage.setItem('trip', ta.value);
                             lt = now;
