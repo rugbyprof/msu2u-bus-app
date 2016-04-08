@@ -64,18 +64,22 @@
                 addHeader();
                 navigator.geolocation.watchPosition(
                     function(position) {
-                        var now = new Date().getTime();
-                        if (ls != 1 || now - lt > 5000) {
+                        var now = new Date();
+                        var h = now.getHours();
+                        var m = (now.getMinutes()<10?'0':'')+ now.getMinutes();
+                        var s = (now.getSeconds()<10?'0':'') + now.getSeconds();
+                      
+                        if (ls != 1 || now - lt > 1000) {
                             ta.value += now + ' // ' + position.coords.latitude + ' // ' + position.coords.longitude + '\n';
                             localStorage.setItem('trip', ta.value);
                             lt = now;
                             ls = 1;
                         }
 	            	$.post( "backend.php", { 
-	            		lat: "33.45", 
-	            		lon: "-97.50", 
+	            		lat: position.coords.latitude, 
+	            		lon: position.coords.longitude, 
 	            		command: 'driver_location',
-	            		time:new Date().getTime() 
+	            		time: h + ':' + m + ':' + s
 	            		
 	            	})
 	  			.done(function( data ) {
@@ -93,8 +97,8 @@
                     },
                     {
                         enableHighAccuracy: true,
-                        maximumAge: 60000,
-                        timeout: 15000
+                        maximumAge: 1000,
+                        timeout: 10000
                     }
                 );
             }
