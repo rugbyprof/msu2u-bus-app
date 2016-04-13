@@ -1,7 +1,7 @@
 <?php
 error_reporting(0);
 
-require("db_credentials.php");
+include("db_credentials.php");
 
 $link = mysqli_connect("localhost", "msu2u", "msu2u2016!!!!!", "msu2u");
 
