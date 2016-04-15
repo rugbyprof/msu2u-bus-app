@@ -5,5 +5,8 @@
         "monolog/monolog": "^1.19",
         "tuupola/slim-basic-auth": "^2.0",
         "akrabat/rka-ip-address-middleware": "^0.4.0"
+    },
+    "require-dev": {
+        "phpdocumentor/phpdocumentor": "2.*"
     }
 }

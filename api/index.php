@@ -16,7 +16,7 @@
 //    curl -X GET https://servername/route/to/grab/
 // I have examples for each route in the comments below.
 
-/**
+/** 
  * @author Terry Griffin <terry.griffin@mwsu.edu>
  */
 
@@ -60,8 +60,8 @@ $container['logger'] = function($c) {
 
 
 /****************************************************************************************************
-* Routes / Controllers
-* 	Controllers connect MODELS and VIEWS. 
+* Routes / Controllers:
+*   	Controllers connect MODELS and VIEWS. 
 ****************************************************************************************************/
 
 //Code to get user ip address
@@ -143,32 +143,53 @@ $app->run();
 ****************************************************************************************************/
 
 
+    
 /**
-* @Class: UserModel
-* @Description: 
-*	This interfaces with the user table, and performs any necessary actions to 
-*	CREATE,EDIT,UPDATE,or DELETE users.
-* @Methods:
+* This interfaces with the user table, and performs any necessary actions to 
+*	    CREATE,EDIT,UPDATE,or DELETE users.
+* 
+* @Method: array getAllUsers()
+* @Method: array getUser()
+* @Method: json addUser(array)
 *		
 */
 class UserModel{
+  /**
+   * @var resource $db        db connection resource
+   */
+    var $db;        
+    
 	function __construct($db){
 		$this->db = $db;
 	}
-	
-	function getAllUsers(){
+    
+  /**
+   * Gets all users from the user table.
+   * @Return array
+   */
+	public function getAllUsers(){
 		$stmt = $this->db->query('SELECT * FROM users');
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $results;
 	}
-	
-	function getUser($id){
+    
+  /**
+   * Gets a user from the user table based in id 
+   * @Param int $id
+   * @Return array
+   */
+	public function getUser($id){
 		$stmt = $this->db->query("SELECT * FROM users WHERE id = '{$id}'");
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $results;
 	}
-	
-	function addUser($data){
+    
+  /**
+   * Adds a user from the user table
+   * @Param array $data
+   * @Return json
+   */	
+	public function addUser($data){
 		$data['timestamp'] = time();
 		$data['id'] = $this->getNextId();
 		$keys = "`".implode("`,`",array_keys($data))."`";
@@ -183,8 +204,12 @@ class UserModel{
 		return ["success"=>($affected_rows > 0)];
 
 	}
-	
-	function getNextId(){
+
+  /**
+   * Gets the next available id from the user table
+   * @Return int
+   */	
+	private function getNextId(){
 		$stmt = $this->db->query('SELECT max(id) as max FROM users');
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		
@@ -194,6 +219,7 @@ class UserModel{
 		return $results[0]['max']+1;		
 	}
 }
+
 
 class EndPoints{
 	function __construct(){
