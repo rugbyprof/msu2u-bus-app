@@ -1,0 +1,209 @@
+
+Array
+(
+    [id] => 99&fname=Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:42:42 Thu/Apr/2016Array
+(
+    [id] => 99&fname=Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:43:47 Thu/Apr/2016Array
+(
+    [id] => 99&fname=Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:43:47 Thu/Apr/2016INSERT INTO users (id,lname,user_type,current_lat,current_lon,timestamp) 
+				  VALUES (99&fname=Terry,Griffin,1,0.0,0.0,0)21:44:39 Thu/Apr/2016Array
+(
+    [id] => 99
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:44:39 Thu/Apr/2016INSERT INTO users (id,fname,lname,user_type,current_lat,current_lon,timestamp) 
+				  VALUES (99,Terry,Griffin,1,0.0,0.0,0)21:46:26 Thu/Apr/2016
+Array
+(
+    [id] => 99
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:46:26 Thu/Apr/2016
+INSERT INTO users (`id`,`fname`,`lname`,`user_type`,`current_lat`,`current_lon`,`timestamp`) 
+				  VALUES ('99','Terry','Griffin','1','0.0','0.0','0')21:46:47 Thu/Apr/2016
+Array
+(
+    [id] => 99
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:46:47 Thu/Apr/2016
+INSERT INTO users (`id`,`fname`,`lname`,`user_type`,`current_lat`,`current_lon`,`timestamp`) 
+				  VALUES ('99','Terry','Griffin','1','0.0','0.0','0')21:47:45 Thu/Apr/2016
+Array
+(
+    [id] => 199
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:47:45 Thu/Apr/2016
+INSERT INTO users (`id`,`fname`,`lname`,`user_type`,`current_lat`,`current_lon`,`timestamp`) 
+				  VALUES ('199','Terry','Griffin','1','0.0','0.0','0')21:49:45 Thu/Apr/2016
+Array
+(
+    [id] => 299
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:49:45 Thu/Apr/2016
+21:50:25 Thu/Apr/2016
+Array
+(
+    [id] => 299
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:50:25 Thu/Apr/2016
+Array
+(
+    [0] => Array
+        (
+            [max(id)] => 199
+        )
+
+)
+21:51:30 Thu/Apr/2016
+Array
+(
+    [id] => 299
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:51:30 Thu/Apr/2016
+Array
+(
+    [0] => Array
+        (
+            [max] => 199
+        )
+
+)
+21:52:55 Thu/Apr/2016
+Array
+(
+    [id] => 299
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:52:55 Thu/Apr/2016
+Array
+(
+    [0] => Array
+        (
+            [max] => 299
+        )
+
+)
+21:53:05 Thu/Apr/2016
+Array
+(
+    [id] => 299
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 0.0
+    [current_lon] => 0.0
+    [timestamp] => 0
+)
+21:53:05 Thu/Apr/2016
+Array
+(
+    [0] => Array
+        (
+            [max] => 300
+        )
+
+)
+21:55:17 Thu/Apr/2016
+Array
+(
+    [id] => 99
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 
+    [current_lon] => 
+    [timestamp] => 0
+)
+21:55:17 Thu/Apr/2016
+Array
+(
+    [0] => Array
+        (
+            [max] => 301
+        )
+
+)
+21:57:44 Thu/Apr/2016
+Array
+(
+    [fname] => Terry
+    [lname] => Griffin
+    [user_type] => 1
+    [current_lat] => 33.123
+    [current_lon] => 98.3434
+)
+21:57:44 Thu/Apr/2016
+Array
+(
+    [0] => Array
+        (
+            [max] => 302
+        )
+
+)
