@@ -161,7 +161,6 @@ class MenuModel{
 		$this->db = $db;
 	}
     
-    public function 
 }
     
 /**
