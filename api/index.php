@@ -210,7 +210,7 @@ class UserModel{
    */	
 	public function addUser($data){
 		$data['timestamp'] = time();
-		$data['id'] = $this->getNextId($this->db,'id','users');
+		$data['id'] = getNextId($this->db,'id','users');
 		$keys = "`".implode("`,`",array_keys($data))."`";
 		$vals = "'".implode("','",array_values($data))."'";
 		
