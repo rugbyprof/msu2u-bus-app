@@ -3,9 +3,7 @@
         "twbs/bootstrap": "^3.3",
         "slim/slim": "~3.0",
         "monolog/monolog": "^1.19",
-        "slim/pdo": "^1.9",
         "tuupola/slim-basic-auth": "^2.0",
-        "akrabat/rka-ip-address-middleware": "^0.4.0",
-        "illuminate/database": "~5.1"
+        "akrabat/rka-ip-address-middleware": "^0.4.0"
     }
 }

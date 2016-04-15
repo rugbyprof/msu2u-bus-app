@@ -1,17 +1,37 @@
 <?php
 
-//curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/user/ -d '{"id": 99,"fname": "Terry","lname": "Griffin","user_type": "1","current_lat": "","current_lon": "","timestamp": "0"}' 
-//curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/user/ -d 'id=99&fname=Terry&lname=Griffin&user_type=1&current_lat=0.0&current_lon=0.0&timestamp=0' 
-//curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/user/ -F 'id=99&fname=Terry' -F 'lname=Griffin' -F 'user_type=1' -F 'current_lat=0.0' -F 'current_lon=0.0' -F 'timestamp=0' 
+// You can use curl commands to "test" routes in the api.
+// For example, the curl command below will add a user to the database:
+//      curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/user/ -d '{"id": 99,"fname": "Terry","lname": "Griffin","user_type": "1","current_lat": "","current_lon": "","timestamp": "0"}' 
+//
+// The above command breaks down like this:
+//    -H "Content-Type: application/json" = what kind of headers to send, and in this case were sending json data
+//    -X POST  = the type of request, in this case were posting data 
+//    https://msu2u.us/bus/api/user/ = the place we want to send our request
+//    -d '{"id": 99,"fname": "Terry","lname": "Griffin","user_type": "1","current_lat": "","current_lon": "","timestamp": "0"}' = the data we want to post 
+// 
+// Same as above, with data formatted differently (notice no "-H" for json)
+//    curl  -X POST https://msu2u.us/bus/api/user/ -d 'id=99&fname=Terry&lname=Griffin&user_type=1&current_lat=0.0&current_lon=0.0&timestamp=0' 
+// Ok, so if you just wanted to "get" data:
+//    curl -X GET https://servername/route/to/grab/
+// I have examples for each route in the comments below.
+
+/**
+ * @author Terry Griffin <terry.griffin@mwsu.edu>
+ */
 
 /****************************************************************************************************
 * Configuration
 ****************************************************************************************************/
 
+// Holds all the packages we installed with composer
 require './vendor/autoload.php';
 
+// Have to set the timezone else php cries like a little bitch.
 date_default_timezone_set("America/Chicago");
 
+// A class that I'm going to use to print out documentation for the api. 
+// Better ways to do it I'm sure.
 $endPoints = new EndPoints();
 
 $app = new \Slim\App();
@@ -50,16 +70,18 @@ $trustedProxies = ['10.0.0.1', '10.0.0.2']; // Note: Never trust the IP address 
 $app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
 
 /**
+* Base endpoint for api
 * @Route: /
 * @Description: base endpoint
 * @Example: curl -X GET https://msu2u.us/bus/api/
+* @Return string $ipAddress
 */
 $app->get('/', function ($request, $response, $args) {
 	global $endPoints;
 	
     $ipAddress = $request->getAttribute('ip_address');
 
-    return $response->write(stripslashes($endPoints->dump()));
+    return $response->write($ipAddress);
 });
 
 
