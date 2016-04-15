@@ -142,7 +142,27 @@ $app->run();
 * 	component and the Controller component in the overall pattern.
 ****************************************************************************************************/
 
-
+/**
+* This interfaces with the menus table.
+* 
+* @Method: array getMenuTypes()
+* @Method: array getMenus()
+* @Method: json addMenu(array)
+* @Method: json addMenuItem(array)
+*		
+*/
+class MenuModel{
+  /**
+   * @var resource $db  database connection resource
+   */
+    var $db;        
+    
+	function __construct($db){
+		$this->db = $db;
+	}
+    
+    public function 
+}
     
 /**
 * This interfaces with the user table, and performs any necessary actions to 
@@ -155,7 +175,7 @@ $app->run();
 */
 class UserModel{
   /**
-   * @var resource $db        db connection resource
+   * @var resource $db  database connection resource
    */
     var $db;        
     
@@ -191,7 +211,7 @@ class UserModel{
    */	
 	public function addUser($data){
 		$data['timestamp'] = time();
-		$data['id'] = $this->getNextId();
+		$data['id'] = $this->getNextId($this->db,'id','users');
 		$keys = "`".implode("`,`",array_keys($data))."`";
 		$vals = "'".implode("','",array_values($data))."'";
 		
@@ -204,20 +224,21 @@ class UserModel{
 		return ["success"=>($affected_rows > 0)];
 
 	}
+}
 
-  /**
-   * Gets the next available id from the user table
-   * @Return int
-   */	
-	private function getNextId(){
-		$stmt = $this->db->query('SELECT max(id) as max FROM users');
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		
-		$log = new ErrorHelp("./logs/error.log");
-	    $log->message(print_r($results,true));
-	    
-		return $results[0]['max']+1;		
-	}
+
+/**
+* Gets the next available id from the user table
+* @Param resource $db database connection resource.
+* @Param string $id name of column to get max on.
+* @Param string $table name of table to find max in.
+* @Return int
+*/	
+function getNextId($db,$id,$table){
+    $stmt = $db->query('SELECT max({$id}) as max FROM {$table}');
+    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+  
+    return $results[0]['max']+1;		
 }
 
 
