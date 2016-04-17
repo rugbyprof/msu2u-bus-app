@@ -1,178 +1,156 @@
 <?php
 
-// You can use curl commands to "test" routes in the api.
-// For example, the curl command below will add a user to the database:
-//      curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/user/ -d '{"id": 99,"fname": "Terry","lname": "Griffin","user_type": "1","current_lat": "","current_lon": "","timestamp": "0"}' 
-//
-// The above command breaks down like this:
-//    -H "Content-Type: application/json" = what kind of headers to send, and in this case were sending json data
-//    -X POST  = the type of request, in this case were posting data 
-//    https://msu2u.us/bus/api/user/ = the place we want to send our request
-//    -d '{"id": 99,"fname": "Terry","lname": "Griffin","user_type": "1","current_lat": "","current_lon": "","timestamp": "0"}' = the data we want to post 
-// 
-// Same as above, with data formatted differently (notice no "-H" for json)
-//    curl  -X POST https://msu2u.us/bus/api/user/ -d 'id=99&fname=Terry&lname=Griffin&user_type=1&current_lat=0.0&current_lon=0.0&timestamp=0' 
-// Ok, so if you just wanted to "get" data:
-//    curl -X GET https://servername/route/to/grab/
-// I have examples for each route in the comments below.
-
-/** 
- * @author Terry Griffin <terry.griffin@mwsu.edu>
- */
-
-/****************************************************************************************************
-* Configuration
-****************************************************************************************************/
-
 // Holds all the packages we installed with composer
 require './vendor/autoload.php';
 
 // Have to set the timezone else php cries like a little bitch.
 date_default_timezone_set("America/Chicago");
 
-// A class that I'm going to use to print out documentation for the api. 
-// Better ways to do it I'm sure.
-$endPoints = new EndPoints();
+/****************************************************************************************************
+* Routes
+****************************************************************************************************/
 
 $app = new \Slim\App();
 
-$container = $app->getContainer();
+$app->group('/v1', function () use ($app) {
+    $app->get('/user/', 'getUsers');
+    $app->get('/user/{id}', 'getUser');
+    $app->post('/user/', 'addUser');
+    $app->put('/user/{id}', 'updateUser');
+    $app->delete('/user/{id}', 'deleteUser');
+    $app->get('/menu/', 'getMenus');
+    $app->get('/menu/{id}', 'getMenuItems');
+    $app->post('/menu/', 'createMenu');
+    $app->post('/menu/{id}', 'addMenuItem');
+    $app->delete('/menu/{menuId}[/{itemId}]', 'deleteMenu');
+});
 
-//Inject the "database connection into slim
-$container['db'] = function ($c) {
-	//Credentials stored in db_credentials.json 
-	$cred = json_decode(file_get_contents('./db_credentials.json'),true);
-    $db = $c['settings']['db'];
-    $pdo = new PDO("mysql:host={$cred['host']};dbname={$cred['dbname']};charset=utf8mb4", $cred['user'], $cred['pass']);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    $pdo->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-    
-    return $pdo;
-};
-
-//Add a logger to slim
-$container['logger'] = function($c) {
-    $logger = new \Monolog\Logger('my_logger');
-    $file_handler = new \Monolog\Handler\StreamHandler("./logs/app.log");
-    $logger->pushHandler($file_handler);
-    return $logger;
-};
+$app->run();
 
 
 /****************************************************************************************************
-* Routes / Controllers:
-*   	Controllers connect MODELS and VIEWS. 
+* User Controllers
 ****************************************************************************************************/
-
-//Code to get user ip address
-$checkProxyHeaders = true; // Note: Never trust the IP address for security processes!
-$trustedProxies = ['10.0.0.1', '10.0.0.2']; // Note: Never trust the IP address for security processes!
-$app->add(new RKA\Middleware\IpAddress($checkProxyHeaders, $trustedProxies));
-
-/**
-* Base endpoint for api
-* @Route: /
-* @Description: base endpoint
-* @Example: curl -X GET https://msu2u.us/bus/api/
-* @Return string $ipAddress
-*/
-$app->get('/', function ($request, $response, $args) {
-	global $endPoints;
-	
-    $ipAddress = $request->getAttribute('ip_address');
-
-    return $response->write($ipAddress);
-});
-
-
 
 /**
 * @Route: /user/
 * @Description: Gets all users.
-* @Example: curl -X GET https://msu2u.us/bus/api/user/ 
+* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/ 
 */
-$endPoints->add('GET','/user/');
-$app->get('/user/',function($request, $response, $args){
-
-	$um = new UserModel($this->db);
-	
-	$results = $um->getAllUsers();
-
-	return $response->write(json_encode($results));
-});
-
-/**
-* @Route: /user/
-* @Description: Gets a single user.
-* @Example: curl -X GET https://msu2u.us/bus/api/user/2
-*/
-$endPoints->add('GET','/user/{id}');
-$app->get('/user/{id}',function($request, $response, $args){
-	$um = new UserModel($this->db);
-	
-	$results = $um->getUser($args['id']);
-
+function getUsers ($request, $response, $args) {
+	$um = new UserModel();
+	$results = $um->getUsers();
 	if($results){
 		return $response->withStatus(200)
         	->withHeader('Content-Type', 'application/json')
         	->write(json_encode($results));
 
-	} else { 
-		throw new PDOException('No records found');
 	}
-});
+}
+
+/**
+* @Route: /user/
+* @Description: Gets a single user.
+* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/{id}
+*/
+function getUser ($request, $response, $args) {
+	$um = new UserModel();
+	$results = $um->getUser($args['id']);
+	if($results){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($results));
+
+	}
+}
 
 /**
 * @Route: /user/
 * @Description: Adds a single user.
-* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/user/ -d '{"fname": "Joe","lname": "Bob","user_type": "1","current_lat": "33.123","current_lon": "98.3434"}' 
+* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/user/ -d '{"fname": "Joe","lname": "Bob","user_type": "1","current_lat": "33.123","current_lon": "98.3434"}' 
 */
-$app->post('/user/', function ($request, $response, $args) {
+function addUser ($request, $response, $args) {
 
-	$log = new ErrorHelp("./logs/error.log");
 	$data = $request->getParsedBody();
-	$log->message(print_r($data,true));
-	$um = new UserModel($this->db);
+	
+	$um = new UserModel();
 	$success = $um->addUser($data);
 	if($success){
 		return $response->withStatus(200)
         	->withHeader('Content-Type', 'application/json')
         	->write(json_encode($success));
 
-	} else { 
-		throw new PDOException('No records found');
 	}
-});
+}
 
 /**
-* @Route: /menus/
-* @Description: Gets all menus.
-* @Example: curl -X GET https://msu2u.us/bus/api/menus/
+* @Route: /user/
+* @Description: Adds a single user.
+* @Example: curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/{id} -d '{"lname": "Cobby","user_type": "2"}' 
+            curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/101 -d '{"lname": "Flabby","user_type": "1","current_lat": "33.88878"}'
 */
-$endPoints->add('GET','/menu/');
-$app->get('/menu/',function($request, $response, $args){
-	$mm = new MenuModel($this->db);
+function updateUser ($request, $response, $args) {
+
+	$data = $request->getParsedBody();
 	
-	$results = $mm->getMenus();
-	
-	if($results){
+	$um = new UserModel();
+	$success = $um->updateUser($args['id'],$data);
+	if($success){
 		return $response->withStatus(200)
         	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($results));
+        	->write(json_encode($success));
 
-	} else { 
-		throw new PDOException('No records found');
 	}
-});
+}
+
+/**
+* @Route: /user/
+* @Description: Deletes a single user.
+* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
+*/
+function deleteUser ($request, $response, $args) {
+
+	$data = $request->getParsedBody();
+	
+	$um = new UserModel();
+	$success = $um->deleteUser($args['id']);
+	if($success){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($success));
+
+	}
+}
+
+/****************************************************************************************************
+* Menu Controllers
+****************************************************************************************************/
 
 /**
 * @Route: /menus/
 * @Description: Gets all menus.
 * @Example: curl -X GET https://msu2u.us/bus/api/menus/
 */
-$endPoints->add('GET','/menu/{id}');
-$app->get('/menu/{id}',function($request, $response, $args){
-	$mm = new MenuModel($this->db);
+function getMenus ($request, $response, $args) {
+	$mm = new MenuModel();
+	
+	$success = $mm->getMenus();
+	
+	if($success){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($success));
+
+	} 
+}
+
+/**
+* @Route: /menus/
+* @Description: Gets all menus.
+* @Example: curl -X GET https://msu2u.us/bus/api/v1/menus/{id}
+*/
+function getMenuItems($request, $response, $args) {
+	$mm = new MenuModel();
 	
 	$results = $mm->getMenuItems($args['id']);
 	
@@ -181,20 +159,75 @@ $app->get('/menu/{id}',function($request, $response, $args){
         	->withHeader('Content-Type', 'application/json')
         	->write(json_encode($results));
 
-	} else { 
-		throw new PDOException('No records found');
 	}
-});
+}
+
+/**
+* @Route: /menus/
+* @Description: Gets all menus.
+* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
+*/
+function createMenu($request, $response, $args) {
+	$mm = new MenuModel();
+	
+	$data = $request->getParsedBody();
+	
+	$results = $mm->createMenu($data);
+	
+	if($results){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($results));
+
+	}
+}
+
+/**
+* @Route: /menus/
+* @Description: Gets all menus.
+* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
+*/
+function addMenuItem($request, $response, $args) {
+	$mm = new MenuModel();
+	
+	$data = $request->getParsedBody();
+	
+	$results = $mm->addMenuItem($args['id'],$data);
+	
+	if($results){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($results));
+
+	}
+}
+
+/**
+* @Route: /user/
+* @Description: Deletes a single user.
+* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
+*/
+function deleteMenu ($request, $response, $args) {
+	
+	$mm = new MenuModel();
+	
+	if(!isset($args['itemId']))
+		$args['itemId'] = false;
+		
+	$success = $mm->deleteMenu($args['menuId'],$args['itemId']);
+	
+	if($success){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($success));
+
+	}
+}
 
 
-// Run app
-$app->run();
 
 /****************************************************************************************************
 * Models
-* 	A model is the name given to the permanent storage of the data used in the overall design. It must allow 
-* 	access for the data to be viewed, or collected and written to, and is the bridge between the View 
-* 	component and the Controller component in the overall pattern.
 ****************************************************************************************************/
 
 /**
@@ -202,182 +235,266 @@ $app->run();
 * 
 * @Method: array getMenus()
 * @Method: array getMenuItems(int)
-* @Method: json addMenu(array)
-* @Method: json addMenuItem(array)
+* @Method: array createMenu(array)
+* @Method: array addMenuItem(int,array)
 *		
 */
 class MenuModel{
   /**
    * @var resource $db  database connection resource
    */
-    var $db;        
+    var $db;
+    var $response;        
     
-	function __construct($db){
-		$this->db = $db;
+	function __construct(){
+		$this->db = new dbManager();
 	}
 	
+  /**
+   * Gets all menus.
+   * @Return array
+   */	
 	public function getMenus(){
-		$query = "SELECT * FROM menus";
-				  
-		$stmt = $this->db->query($query);
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-	
-		return ["success"=>(sizeof($results)>0),"results"=>$results];
+		return $this->db->fetch('select * from menus');
 	}
-	
+
+  /**
+   * Gets all menu items for a given menu.
+   * @Param int id
+   * @Return array
+   */	
 	public function getMenuItems($id){
 	
-		
-		$query = "SELECT * FROM menu_items WHERE menu_id = '{$id}'";
-				  
-		$stmt = $this->db->query($query);
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-	
-		return ["success"=>(sizeof($results)>0),"results"=>$results];
+		return $this->db->fetch('select * from menu_items where menu_id = ?',array($id));
 		
 	}
 	
-	public function addMenu($data){
-		$data['id'] = getNextId($this->db,'id','menus');
-		$keys = "`".implode("`,`",array_keys($data))."`";
-		$vals = "'".implode("','",array_values($data))."'";
+  /**
+   * Adds a new menu to the system
+   * @Param array data
+   * @Return array
+   */	
+	public function createMenu($data){
+		$data['id'] = $this->db->getNextId('menus','id');
 		
-		$query = "INSERT INTO menus ({$keys}) 
-				  VALUES ({$vals})";
-				  
-		$count = $this->db->exec($query);
+		return $this->db->insert('menus',$data);
+	}
 
-			
+  /**
+   * Adds a new menu item to a specifice menu. It calculates a new item id and a order value.
+   * @Param array data
+   * @Return array
+   */		
+	public function addMenuItem($id,$data){
+		$data['item_id'] = $this->db->getNextId('menu_items','item_id',"menu_id = {$id}");
+		$data['menu_id'] = $id;
+		$data['order'] = $data['item_id'] * 10;
+		
+		return $this->db->insert('menu_items',$data);	
+	}
+	
+  /**
+   * Deletes a menu from the menus table along with its items, or just an item from an existing menu.
+   * @Param int $id
+   * @Return array
+   */	
+	public function deleteMenu($menuId,$itemId){
 
-		return ["success"=>($count > 0)];	
+		if($itemId === false){
+			$one = $this->db->delete('menus',['id'=>$menuId]);
+			$two = $this->db->delete('menu_items',['menu_id'=>$menuId]);
+			return [$one,$two];
+		}else{
+			return $this->db->delete('menu_items',[['menu_id'=>$menuId],['item_id'=>$itemId]]);
+		}
 	}
 	
 }
-    
+
 /**
 * This interfaces with the user table, and performs any necessary actions to 
 *	    CREATE,EDIT,UPDATE,or DELETE users.
 * 
-* @Method: array getAllUsers()
+* @Method: array getUsers()
 * @Method: array getUser()
-* @Method: json addUser(array)
+* @Method: array addUser(array)
+* @Method: array updateUser()
+* @Method: array deleteUser()
 *		
 */
 class UserModel{
   /**
    * @var resource $db  database connection resource
    */
-    var $db;        
+    var $db;
+    var $response;        
     
-	function __construct($db){
-		$this->db = $db;
+	function __construct(){
+		$this->db = new dbManager();
 	}
     
   /**
    * Gets all users from the user table.
    * @Return array
    */
-	public function getAllUsers(){
-		$stmt = $this->db->query("SELECT * FROM users");
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return $results;
+	public function getUsers(){
+		return $this->db->fetch('select * from users');
 	}
     
   /**
-   * Gets a user from the user table based in id 
+   * Gets a user from the user table based on id 
    * @Param int $id
    * @Return array
    */
 	public function getUser($id){
-		$stmt = $this->db->query("SELECT * FROM users WHERE id = '{$id}'");
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-		return $results;
+		return $this->db->fetch('select * from users where id = ?',array($id));
 	}
     
   /**
-   * Adds a user from the user table
+   * Adds a user to the user table
    * @Param array $data
-   * @Return json
+   * @Return array
    */	
 	public function addUser($data){
 		$data['timestamp'] = time();
-		$data['id'] = getNextId($this->db,'id','users');
-		$keys = "`".implode("`,`",array_keys($data))."`";
-		$vals = "'".implode("','",array_values($data))."'";
+		$data['id'] = $this->db->getNextId('users','id');
 		
-		
-		$query = "INSERT INTO users ({$keys}) 
-				  VALUES ({$vals})";
-				  	    
-		$affected_rows = $this->db->exec($query);
-		
-
-		return ["success"=>($affected_rows > 0)];
-
-	}
-}
-
-class dbHelper{
-	function __construct($db){
-		$this->db = $db;
+		return $this->db->insert('users',$data);
 	}
 	
-	function fetch($query){
-				  
-		$stmt = $this->db->query($query);
-		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
+  /**
+   * Updates a user from the user table by replacing each value present in the data array to the row identified by '$id'.
+   * @Param int $id
+   * @Param array $data
+   * @Return array
+   */	
+	public function updateUser($id,$data){
+		return $this->db->update('users','id',$id,$data);
+	}
 	
-		return ["success"=>(sizeof($results)>0),"results"=>$results];
+  /**
+   * Deletes a user from the user table identified by id.
+   * @Param int $id
+   * @Return array
+   */	
+	public function deleteUser($id){
+		return $this->db->delete('users',['id'=>$id]);
+
 	}
 }
 
 
-/**
-* Gets the next available id from the user table
-* @Param resource $db database connection resource.
-* @Param string $id name of column to get max on.
-* @Param string $table name of table to find max in.
-* @Return int
-*/	
-function getNextId($db,$id,$table){
-    
-    $stmt = $db->query("SELECT max({$id}) as max FROM {$table}");
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-  
-    return $results[0]['max']+1;		
-}
+//https://github.com/joshcam/PHP-MySQLi-Database-Class
+class dbManager{
 
-
-class EndPoints{
+	var $response;
+	var $db;
+	
 	function __construct(){
-		$this->uris = [];
+
+		$this->respone = [];
+		
+		$cred = json_decode(file_get_contents('./db_credentials.json'),true);
+
+		$this->db = new MysqliDb ($cred['host'], $cred['user'], $cred['pass'], $cred['dbname']);
+		
 	}
 	
-	function add($category,$uri){
-		$this->uris[$category][] = array('uri'=>$uri);
+	public function fetch($sql,$params=null){
+	
+		$this->respone = [];
+
+		$rows = $this->db->rawQuery($sql,$params);
+		
+		if($rows){
+			$this->response['success'] = true;
+			$this->response['data'] = $rows;
+		}else{
+    		$this->response['error'] = $db->getLastError();	
+		}
+		
+		return $this->response;
 	}
 	
-	function dump(){
-		return json_encode($this->uris);
+	public function insert($table,$data){
+		$this->respone = [];
+		
+		$id = $this->db->insert($table, $data);
+		
+		
+		if($id){
+    		$this->response['success'] = true;
+		}else{
+    		$this->response['error'] = $db->getLastError();	
+		}
+		
+		return $this->response;
+	}
+	
+	public function update($table,$id_key,$id_val,$data){
+	
+		$this->response = [];
+						
+		$this->db->where("{$id_key} = {$id_val}");
+		$this->db->update($table,$data);
+		
+				
+	
+		if($this->db->count){
+			$this->response['success'] = true;
+			$this->response['count'] = $this->db->count;
+		}else{
+			$this->response['success'] = false;
+			$this->response['error'] = $db->getLastError();				
+		}
+		
+		return $this->response;
+	}
+	
+	public function delete($table,$where){
+		$this->response = [];
+		
+		foreach($where as $k => $v){
+			$this->db->where($k,$v);
+		}
+		$success = $this->db->delete($table);
+		
+				
+		if($success){
+			$this->response['success'] = true;
+		}else{
+			$this->response['error'] = $db->getLastError();				
+		}
+		
+		return $this->response;		
+	}
+	
+	
+	/**
+	* Gets the next available id from some table given the id column and assuming the id is an int.
+	* @Param string $id name of column to get max on.
+	* @Param string $table name of table to find max in.
+	* @Return int
+	*/	
+	function getNextId($table,$col,$where=1){
+		$this->db->where($where);
+		$max = $this->db->getValue ($table, "max({$col})");
+				
+		return $max+1;		
 	}
 }
 
 class ErrorHelp{
-	function __construct($path="./error.log"){
+	function __construct($path="/var/www/html/bus/api/logs/error.log"){
 		$this->path = $path;
 	}
 	
-	function message($error){
+	function dump($error){
 	
 		file_put_contents($this->path,date("H:i:s D/M/Y",time())."\n",FILE_APPEND);
-		file_put_contents($this->path,$error,FILE_APPEND);
+		file_put_contents($this->path,print_r($error,true),FILE_APPEND);
+		file_put_contents($this->path,"\n",FILE_APPEND);
 	}
 }
 
-function dd($foo){
-	print_r($foo);
-	echo"<br>";
-}

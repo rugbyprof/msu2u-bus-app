@@ -1,209 +1,245 @@
 
+18:56:13 Sat/Apr/2016
+boom
+18:57:45 Sat/Apr/2016
+boom
+18:57:45 Sat/Apr/2016
 Array
 (
-    [id] => 99&fname=Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
+    [lname] => Cobby
+    [user_type] => 2
 )
-21:42:42 Thu/Apr/2016Array
-(
-    [id] => 99&fname=Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:43:47 Thu/Apr/2016Array
-(
-    [id] => 99&fname=Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:43:47 Thu/Apr/2016INSERT INTO users (id,lname,user_type,current_lat,current_lon,timestamp) 
-				  VALUES (99&fname=Terry,Griffin,1,0.0,0.0,0)21:44:39 Thu/Apr/2016Array
-(
-    [id] => 99
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:44:39 Thu/Apr/2016INSERT INTO users (id,fname,lname,user_type,current_lat,current_lon,timestamp) 
-				  VALUES (99,Terry,Griffin,1,0.0,0.0,0)21:46:26 Thu/Apr/2016
-Array
-(
-    [id] => 99
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:46:26 Thu/Apr/2016
-INSERT INTO users (`id`,`fname`,`lname`,`user_type`,`current_lat`,`current_lon`,`timestamp`) 
-				  VALUES ('99','Terry','Griffin','1','0.0','0.0','0')21:46:47 Thu/Apr/2016
-Array
-(
-    [id] => 99
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:46:47 Thu/Apr/2016
-INSERT INTO users (`id`,`fname`,`lname`,`user_type`,`current_lat`,`current_lon`,`timestamp`) 
-				  VALUES ('99','Terry','Griffin','1','0.0','0.0','0')21:47:45 Thu/Apr/2016
-Array
-(
-    [id] => 199
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:47:45 Thu/Apr/2016
-INSERT INTO users (`id`,`fname`,`lname`,`user_type`,`current_lat`,`current_lon`,`timestamp`) 
-				  VALUES ('199','Terry','Griffin','1','0.0','0.0','0')21:49:45 Thu/Apr/2016
-Array
-(
-    [id] => 299
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:49:45 Thu/Apr/2016
-21:50:25 Thu/Apr/2016
-Array
-(
-    [id] => 299
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:50:25 Thu/Apr/2016
+
+19:00:04 Sat/Apr/2016
+boom
+19:01:16 Sat/Apr/2016
+boom
+19:01:16 Sat/Apr/2016
 Array
 (
     [0] => Array
         (
-            [max(id)] => 199
+            [id] => 1
+            [fname] => Bob
+            [lname] => Busdriver
+            [user_type] => 2
+            [current_lat] => 33.8658856
+            [current_lon] => -98.5183968
+            [timestamp] => 0
+        )
+
+    [1] => Array
+        (
+            [id] => 2
+            [fname] => Jony
+            [lname] => Smith
+            [user_type] => 1
+            [current_lat] => 33.8621796
+            [current_lon] => -98.5230316
+            [timestamp] => 0
+        )
+
+    [2] => Array
+        (
+            [id] => 3
+            [fname] => Sue
+            [lname] => Jones
+            [user_type] => 1
+            [current_lat] => 33.2345234
+            [current_lon] => 97.34563
+            [timestamp] => 0
+        )
+
+    [3] => Array
+        (
+            [id] => 4
+            [fname] => Xavier
+            [lname] => Booldoodle
+            [user_type] => 2
+            [current_lat] => 4
+            [current_lon] => 8
+            [timestamp] => 0
+        )
+
+    [4] => Array
+        (
+            [id] => 5
+            [fname] => Freddy
+            [lname] => Gonzalex
+            [user_type] => 2
+            [current_lat] => 2
+            [current_lon] => 4
+            [timestamp] => 1
+        )
+
+    [5] => Array
+        (
+            [id] => 99
+            [fname] => Tina
+            [lname] => Fey
+            [user_type] => 1
+            [current_lat] => 0
+            [current_lon] => 0
+            [timestamp] => 1460666333
+        )
+
+    [6] => Array
+        (
+            [id] => 100
+            [fname] => Terry
+            [lname] => Griffin
+            [user_type] => 1
+            [current_lat] => 33.123
+            [current_lon] => 98.3434
+            [timestamp] => 1460747741
+        )
+
+    [7] => Array
+        (
+            [id] => 101
+            [fname] => Joe
+            [lname] => Bob
+            [user_type] => 1
+            [current_lat] => 33.123
+            [current_lon] => 98.3434
+            [timestamp] => 1460840002
+        )
+
+    [8] => Array
+        (
+            [id] => 102
+            [fname] => Nanny
+            [lname] => McPhee
+            [user_type] => 1
+            [current_lat] => 33.123
+            [current_lon] => 98.3434
+            [timestamp] => 1460848026
         )
 
 )
-21:51:30 Thu/Apr/2016
+
+19:01:16 Sat/Apr/2016
 Array
 (
-    [id] => 299
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
+    [lname] => Cobby
+    [user_type] => 2
 )
-21:51:30 Thu/Apr/2016
+
+19:02:11 Sat/Apr/2016
+boom
+19:02:11 Sat/Apr/2016
 Array
 (
     [0] => Array
         (
-            [max] => 199
+            [id] => 1
+            [fname] => Bob
+            [lname] => Busdriver
+            [user_type] => 2
+            [current_lat] => 33.8658856
+            [current_lon] => -98.5183968
+            [timestamp] => 0
         )
 
-)
-21:52:55 Thu/Apr/2016
-Array
-(
-    [id] => 299
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:52:55 Thu/Apr/2016
-Array
-(
-    [0] => Array
+    [1] => Array
         (
-            [max] => 299
+            [id] => 2
+            [fname] => Jony
+            [lname] => Smith
+            [user_type] => 1
+            [current_lat] => 33.8621796
+            [current_lon] => -98.5230316
+            [timestamp] => 0
         )
 
-)
-21:53:05 Thu/Apr/2016
-Array
-(
-    [id] => 299
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 0.0
-    [current_lon] => 0.0
-    [timestamp] => 0
-)
-21:53:05 Thu/Apr/2016
-Array
-(
-    [0] => Array
+    [2] => Array
         (
-            [max] => 300
+            [id] => 3
+            [fname] => Sue
+            [lname] => Jones
+            [user_type] => 1
+            [current_lat] => 33.2345234
+            [current_lon] => 97.34563
+            [timestamp] => 0
         )
 
-)
-21:55:17 Thu/Apr/2016
-Array
-(
-    [id] => 99
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 
-    [current_lon] => 
-    [timestamp] => 0
-)
-21:55:17 Thu/Apr/2016
-Array
-(
-    [0] => Array
+    [3] => Array
         (
-            [max] => 301
+            [id] => 4
+            [fname] => Xavier
+            [lname] => Booldoodle
+            [user_type] => 2
+            [current_lat] => 4
+            [current_lon] => 8
+            [timestamp] => 0
         )
 
-)
-21:57:44 Thu/Apr/2016
-Array
-(
-    [fname] => Terry
-    [lname] => Griffin
-    [user_type] => 1
-    [current_lat] => 33.123
-    [current_lon] => 98.3434
-)
-21:57:44 Thu/Apr/2016
-Array
-(
-    [0] => Array
+    [4] => Array
         (
-            [max] => 302
+            [id] => 5
+            [fname] => Freddy
+            [lname] => Gonzalex
+            [user_type] => 2
+            [current_lat] => 2
+            [current_lon] => 4
+            [timestamp] => 1
+        )
+
+    [5] => Array
+        (
+            [id] => 99
+            [fname] => Tina
+            [lname] => Fey
+            [user_type] => 1
+            [current_lat] => 0
+            [current_lon] => 0
+            [timestamp] => 1460666333
+        )
+
+    [6] => Array
+        (
+            [id] => 100
+            [fname] => Terry
+            [lname] => Griffin
+            [user_type] => 1
+            [current_lat] => 33.123
+            [current_lon] => 98.3434
+            [timestamp] => 1460747741
+        )
+
+    [7] => Array
+        (
+            [id] => 101
+            [fname] => Joe
+            [lname] => Cobby
+            [user_type] => 2
+            [current_lat] => 33.123
+            [current_lon] => 98.3434
+            [timestamp] => 1460840002
+        )
+
+    [8] => Array
+        (
+            [id] => 102
+            [fname] => Nanny
+            [lname] => McPhee
+            [user_type] => 1
+            [current_lat] => 33.123
+            [current_lon] => 98.3434
+            [timestamp] => 1460848026
         )
 
 )
+
+19:02:11 Sat/Apr/2016
+Array
+(
+    [lname] => Flabby
+    [user_type] => 1
+    [current_lat] => 33.88878
+)
+
+20:05:53 Sat/Apr/2016
+3
+20:05:53 Sat/Apr/2016
+
