@@ -112,7 +112,14 @@ $app->get('/user/{id}',function($request, $response, $args){
 	
 	$results = $um->getUser($args['id']);
 
-	return $response->write(json_encode($results));
+	if($results){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($results));
+
+	} else { 
+		throw new PDOException('No records found');
+	}
 });
 
 /**
@@ -127,9 +134,57 @@ $app->post('/user/', function ($request, $response, $args) {
 	$log->message(print_r($data,true));
 	$um = new UserModel($this->db);
 	$success = $um->addUser($data);
-	return $response->write(json_encode($success));
+	if($success){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($success));
+
+	} else { 
+		throw new PDOException('No records found');
+	}
 });
 
+/**
+* @Route: /menus/
+* @Description: Gets all menus.
+* @Example: curl -X GET https://msu2u.us/bus/api/menus/
+*/
+$endPoints->add('GET','/menu/');
+$app->get('/menu/',function($request, $response, $args){
+	$mm = new MenuModel($this->db);
+	
+	$results = $mm->getMenus();
+	
+	if($results){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($results));
+
+	} else { 
+		throw new PDOException('No records found');
+	}
+});
+
+/**
+* @Route: /menus/
+* @Description: Gets all menus.
+* @Example: curl -X GET https://msu2u.us/bus/api/menus/
+*/
+$endPoints->add('GET','/menu/{id}');
+$app->get('/menu/{id}',function($request, $response, $args){
+	$mm = new MenuModel($this->db);
+	
+	$results = $mm->getMenuItems($args['id']);
+	
+	if($results){
+		return $response->withStatus(200)
+        	->withHeader('Content-Type', 'application/json')
+        	->write(json_encode($results));
+
+	} else { 
+		throw new PDOException('No records found');
+	}
+});
 
 
 // Run app
@@ -145,8 +200,8 @@ $app->run();
 /**
 * This interfaces with the menus table.
 * 
-* @Method: array getMenuTypes()
 * @Method: array getMenus()
+* @Method: array getMenuItems(int)
 * @Method: json addMenu(array)
 * @Method: json addMenuItem(array)
 *		
@@ -160,7 +215,45 @@ class MenuModel{
 	function __construct($db){
 		$this->db = $db;
 	}
-    
+	
+	public function getMenus(){
+		$query = "SELECT * FROM menus";
+				  
+		$stmt = $this->db->query($query);
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+	
+		return ["success"=>(sizeof($results)>0),"results"=>$results];
+	}
+	
+	public function getMenuItems($id){
+	
+		
+		$query = "SELECT * FROM menu_items WHERE menu_id = '{$id}'";
+				  
+		$stmt = $this->db->query($query);
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+	
+		return ["success"=>(sizeof($results)>0),"results"=>$results];
+		
+	}
+	
+	public function addMenu($data){
+		$data['id'] = getNextId($this->db,'id','menus');
+		$keys = "`".implode("`,`",array_keys($data))."`";
+		$vals = "'".implode("','",array_values($data))."'";
+		
+		$query = "INSERT INTO menus ({$keys}) 
+				  VALUES ({$vals})";
+				  
+		$count = $this->db->exec($query);
+
+			
+
+		return ["success"=>($count > 0)];	
+	}
+	
 }
     
 /**
@@ -187,7 +280,7 @@ class UserModel{
    * @Return array
    */
 	public function getAllUsers(){
-		$stmt = $this->db->query('SELECT * FROM users');
+		$stmt = $this->db->query("SELECT * FROM users");
 		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 		return $results;
 	}
@@ -219,9 +312,25 @@ class UserModel{
 				  VALUES ({$vals})";
 				  	    
 		$affected_rows = $this->db->exec($query);
+		
 
 		return ["success"=>($affected_rows > 0)];
 
+	}
+}
+
+class dbHelper{
+	function __construct($db){
+		$this->db = $db;
+	}
+	
+	function fetch($query){
+				  
+		$stmt = $this->db->query($query);
+		$results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+	
+		return ["success"=>(sizeof($results)>0),"results"=>$results];
 	}
 }
 
