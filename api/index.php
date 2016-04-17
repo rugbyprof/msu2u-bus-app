@@ -3,6 +3,8 @@
 // Holds all the packages we installed with composer
 require './vendor/autoload.php';
 
+use \Firebase\JWT\JWT;
+
 // Have to set the timezone else php cries like a little bitch.
 date_default_timezone_set("America/Chicago");
 
@@ -12,217 +14,271 @@ date_default_timezone_set("America/Chicago");
 
 $app = new \Slim\App();
 
+//curl -X GET https://msu2u.us/bus/api/v1/ --user root:t00r
+// $app->add(new \Slim\Middleware\HttpBasicAuthentication([
+//     "path" => "/v1", /* or ["/admin", "/api"] */
+//     "realm" => "Protected",
+//     "users" => [
+//         "root" => "t00r",
+//         "user" => "passw0rd"
+//     ],
+//     "callback" => function ($request, $response, $arguments) {
+//         print_r($arguments);
+//     },
+// 	"error" => function ($request, $response, $arguments) {
+//         $data = [];
+//         $data["status"] = "error";
+//         $data["message"] = $arguments["message"];
+//         return $response->write(json_encode($data, JSON_UNESCAPED_SLASHES));
+//     }
+// ]));
+
+
+
 $app->group('/v1', function () use ($app) {
-    $app->get('/user/', 'getUsers');
-    $app->get('/user/{id}', 'getUser');
-    $app->post('/user/', 'addUser');
-    $app->put('/user/{id}', 'updateUser');
-    $app->delete('/user/{id}', 'deleteUser');
-    $app->get('/menu/', 'getMenus');
-    $app->get('/menu/{id}', 'getMenuItems');
-    $app->post('/menu/', 'createMenu');
-    $app->post('/menu/{id}', 'addMenuItem');
-    $app->delete('/menu/{menuId}[/{itemId}]', 'deleteMenu');
+	$app->get('/','base');
+    $app->get('/user/', '\UserController:getUsers');
+    $app->get('/user/{id:[0-9]+}', '\UserController:getUser');
+    $app->get('/menu/', '\MenuController:getMenus');
+    $app->get('/menu/{id}', '\MenuController:getMenuItems');
+    $app->post('/user/', '\UserController:addUser');
+    $app->post('/menu/', '\MenuController:createMenu');
+    $app->post('/menu/{id}', '\MenuController:addMenuItem');
+    $app->put('/user/{id}', '\UserController:updateUser');
+    $app->delete('/user/{id}', '\UserController:deleteUser');
+    $app->delete('/menu/{menuId}[/{itemId}]', '\MenuController:deleteMenu');
 });
 
 $app->run();
 
-
-/****************************************************************************************************
-* User Controllers
-****************************************************************************************************/
 
 /**
 * @Route: /user/
 * @Description: Gets all users.
 * @Example: curl -X GET https://msu2u.us/bus/api/v1/user/ 
 */
-function getUsers ($request, $response, $args) {
-	$um = new UserModel();
-	$results = $um->getUsers();
-	if($results){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($results));
-
-	}
-}
-
-/**
-* @Route: /user/
-* @Description: Gets a single user.
-* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/{id}
-*/
-function getUser ($request, $response, $args) {
-	$um = new UserModel();
-	$results = $um->getUser($args['id']);
-	if($results){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($results));
-
-	}
-}
-
-/**
-* @Route: /user/
-* @Description: Adds a single user.
-* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/user/ -d '{"fname": "Joe","lname": "Bob","user_type": "1","current_lat": "33.123","current_lon": "98.3434"}' 
-*/
-function addUser ($request, $response, $args) {
-
-	$data = $request->getParsedBody();
+function base ($request, $response, $args) {
+	$key = "supersecretkey";
+	$token = array(
+		"iss" => "http://msu2u.us",
+		"aud" => "http://msu2u.us",
+		"iat" => 1356999524,
+		"nbf" => 1357000000,
+		"scopes"=> ["menu", "user"] 
+	);
 	
-	$um = new UserModel();
-	$success = $um->addUser($data);
-	if($success){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($success));
+	echo"<pre>";
 
-	}
-}
-
-/**
-* @Route: /user/
-* @Description: Adds a single user.
-* @Example: curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/{id} -d '{"lname": "Cobby","user_type": "2"}' 
-*            curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/101 -d '{"lname": "Flabby","user_type": "1","current_lat": "33.88878"}'
-*/
-function updateUser ($request, $response, $args) {
-
-	$data = $request->getParsedBody();
+	/**
+	 * IMPORTANT:
+	 * You must specify supported algorithms for your application. See
+	 * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
+	 * for a list of spec-compliant algorithms.
+	 */
+	$jwt = JWT::encode($token, $key);
 	
-	$um = new UserModel();
-	$success = $um->updateUser($args['id'],$data);
-	if($success){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($success));
-
-	}
-}
-
-/**
-* @Route: /user/
-* @Description: Deletes a single user.
-* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
-*/
-function deleteUser ($request, $response, $args) {
-
-	$data = $request->getParsedBody();
+	print_r($jwt);
 	
-	$um = new UserModel();
-	$success = $um->deleteUser($args['id']);
-	if($success){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($success));
+	$decoded = JWT::decode($jwt, $key, array('HS256'));
+
+
+	/*
+	 NOTE: This will now be an object instead of an associative array. To get
+	 an associative array, you will need to cast it as such:
+	*/
+
+	$decoded_array = (array) $decoded;
+	
+	print_r($decoded);
+
+
+	/**
+	 * You can add a leeway to account for when there is a clock skew times between
+	 * the signing and verifying servers. It is recommended that this leeway should
+	 * not be bigger than a few minutes.
+	 *
+	 * Source: http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef
+	 */
+	JWT::$leeway = 60; // $leeway in seconds
+	$decoded = JWT::decode($jwt, $key, array('HS256'));
+	
+	print_r((array)$decoded);
+	
+	
+}
+
+/****************************************************************************************************
+* User Controllers
+****************************************************************************************************/
+
+
+class UserController{
+
+	var $um;
+	
+	function __construct(){
+		$this->um = new UserModel();
+	}
+
+	/**
+	* @Route: /user/
+	* @Description: Gets all users.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/ 
+	*/
+	public function getUsers ($request, $response, $args) {
+
+		return $this->sendResponse($response,$this->um->getUsers());
 
 	}
+
+	/**
+	* @Route: /user/
+	* @Description: Gets a single user.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/{id}
+	*/
+	public function getUser ($request, $response, $args) {
+
+		return $this->sendResponse($response,$this->um->getUser($args['id']));
+
+	}
+
+	/**
+	* @Route: /user/
+	* @Description: Adds a single user.
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/user/ -d '{"fname": "Joe","lname": "Bob","user_type": "1","current_lat": "33.123","current_lon": "98.3434"}' 
+	*/
+	public function addUser ($request, $response, $args) {
+
+		//Get the posted data from the request
+		$data = $request->getParsedBody();
+		
+		//Add the user and send the response
+		return $this->sendResponse($response,$this->um->addUser($data));
+		
+	}
+
+	/**
+	* @Route: /user/
+	* @Description: Adds a single user.
+	* @Example: curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/{id} -d '{"lname": "Cobby","user_type": "2"}' 
+	*            curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/101 -d '{"lname": "Flabby","user_type": "1","current_lat": "33.88878"}'
+	*/
+	public function updateUser ($request, $response, $args) {
+
+		//Get the data to update the user with
+		$data = $request->getParsedBody();
+			
+		//Add the user and send the response
+		return $this->sendResponse($response,$this->um->updateUser($args['id'],$data));
+		
+	}
+	
+
+	/**
+	* @Route: /user/
+	* @Description: Deletes a single user.
+	* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
+	*/
+	public function deleteUser ($request, $response, $args) {
+
+		$data = $request->getParsedBody();
+			
+		return $this->sendResponse($response,$this->um->deleteUser($args['id']));
+				
+	}
+	
+	private function sendResponse($response,$results){
+		return $response->withStatus(200)
+			->withHeader('Content-Type', 'application/json')
+			->write(json_encode($results));
+	}
 }
+
+
 
 /****************************************************************************************************
 * Menu Controllers
 ****************************************************************************************************/
 
-/**
-* @Route: /menus/
-* @Description: Gets all menus.
-* @Example: curl -X GET https://msu2u.us/bus/api/menus/
-*/
-function getMenus ($request, $response, $args) {
-	$mm = new MenuModel();
-	
-	$success = $mm->getMenus();
-	
-	if($success){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($success));
 
-	} 
-}
+class MenuController{
+	var $mm;
+	
+	function __construct(){
+		$this->mm = new MenuModel();
+	}
+	
+	/**
+	* @Route: /menus/
+	* @Description: Gets all menus.
+	* @Example: curl -X GET https://msu2u.us/bus/api/menus/
+	*/
+	public function getMenus ($request, $response, $args) {
+	
+		return $this->sendResponse($response,$this->mm->getMenus());
+	
+	}
 
-/**
-* @Route: /menus/
-* @Description: Gets all menus.
-* @Example: curl -X GET https://msu2u.us/bus/api/v1/menus/{id}
-*/
-function getMenuItems($request, $response, $args) {
-	$mm = new MenuModel();
+	/**
+	* @Route: /menus/
+	* @Description: Gets all menus.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/menus/{id}
+	*/
+	public function getMenuItems($request, $response, $args) {
 	
-	$results = $mm->getMenuItems($args['id']);
+		return $this->sendResponse($response,$this->mm->getMenuItems($args['id']));
 	
-	if($results){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($results));
+	}
+
+	/**
+	* @Route: /menus/
+	* @Description: Gets all menus.
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
+	*/
+	public function createMenu($request, $response, $args) {
+	
+		$data = $request->getParsedBody();
+	
+		return $this->sendResponse($response,$this->mm->createMenu($data));
 
 	}
-}
 
-/**
-* @Route: /menus/
-* @Description: Gets all menus.
-* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
-*/
-function createMenu($request, $response, $args) {
-	$mm = new MenuModel();
+	/**
+	* @Route: /menus/
+	* @Description: Gets all menus.
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
+	*/
+	public function addMenuItem($request, $response, $args) {
 	
-	$data = $request->getParsedBody();
+		$data = $request->getParsedBody();
 	
-	$results = $mm->createMenu($data);
+		return $this->sendResponse($response,$this->mm->addMenuItem($args['id'],$data));
 	
-	if($results){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($results));
-
 	}
-}
 
-/**
-* @Route: /menus/
-* @Description: Gets all menus.
-* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
-*/
-function addMenuItem($request, $response, $args) {
-	$mm = new MenuModel();
+	/**
+	* @Route: /user/
+	* @Description: Deletes a single user.
+	* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
+	*/
+	public function deleteMenu ($request, $response, $args) {
 	
-	$data = $request->getParsedBody();
-	
-	$results = $mm->addMenuItem($args['id'],$data);
-	
-	if($results){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($results));
-
-	}
-}
-
-/**
-* @Route: /user/
-* @Description: Deletes a single user.
-* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
-*/
-function deleteMenu ($request, $response, $args) {
-	
-	$mm = new MenuModel();
-	
-	if(!isset($args['itemId']))
-		$args['itemId'] = false;
+		if(!isset($args['itemId'])){
+			$args['itemId'] = false;
+		}
 		
-	$success = $mm->deleteMenu($args['menuId'],$args['itemId']);
+		return $this->sendResponse($response,$this->mm->deleteMenu($args['menuId'],$args['itemId']));
 	
-	if($success){
-		return $response->withStatus(200)
-        	->withHeader('Content-Type', 'application/json')
-        	->write(json_encode($success));
+	}
 
+	
+	private function sendResponse($response,$results){
+		return $response->withStatus(200)
+			->withHeader('Content-Type', 'application/json')
+			->write(json_encode($results));
 	}
 }
+
 
 
 
