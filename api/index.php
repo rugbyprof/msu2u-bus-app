@@ -234,7 +234,8 @@ class UserModel{
 * @Return int
 */	
 function getNextId($db,$id,$table){
-    $stmt = $db->query('SELECT max({$id}) as max FROM {$table}');
+    
+    $stmt = $db->query("SELECT max({$id}) as max FROM {$table}");
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
   
     return $results[0]['max']+1;		
