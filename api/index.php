@@ -3,8 +3,6 @@
 // Holds all the packages we installed with composer
 require './vendor/autoload.php';
 
-use \Firebase\JWT\JWT;
-
 // Have to set the timezone else php cries like a little bitch.
 date_default_timezone_set("America/Chicago");
 
@@ -38,7 +36,7 @@ $app = new \Slim\App();
 $app->group('/v1', function () use ($app) {
 	$app->get('/','base');
     $app->get('/user/', '\UserController:getUsers');
-    $app->get('/user/{id:[0-9]+}', '\UserController:getUser');
+    $app->get('/user/{id}', '\UserController:getUser');
     $app->get('/menu/', '\MenuController:getMenus');
     $app->get('/menu/{id}', '\MenuController:getMenuItems');
     $app->post('/user/', '\UserController:addUser');
