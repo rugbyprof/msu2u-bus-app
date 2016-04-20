@@ -36,9 +36,9 @@ $app = new \Slim\App();
 $app->group('/v1', function () use ($app) {
 	$app->get('/','base');
     $app->get('/user/', '\UserController:getUsers');
-    $app->get('/user/{id}', '\UserController:getUser');
+    $app->get('/user/{id}/', '\UserController:getUser');
     $app->get('/menu/', '\MenuController:getMenus');
-    $app->get('/menu/{id}', '\MenuController:getMenuItems');
+    $app->get('/menu/{id}/', '\MenuController:getMenuItems');
     $app->post('/user/', '\UserController:addUser');
     $app->post('/menu/', '\MenuController:createMenu');
     $app->post('/menu/{id}', '\MenuController:addMenuItem');
