@@ -131,4 +131,4 @@ private function sendResponse($response,$results){
 
 ## Models
 
-
+I'll discuss models this weekend, and add an example on retreiving a bus route.
