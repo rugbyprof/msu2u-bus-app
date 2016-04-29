@@ -1,4 +1,6 @@
-## Add A Route
+## Routes
+
+Documentation for Slim3 routes: http://www.slimframework.com/docs/objects/router.html
 
 A route is the manner in which we communicate with the "backend", and by communicate we mean:
   - GET: Get some data
@@ -6,7 +8,7 @@ A route is the manner in which we communicate with the "backend", and by communi
   - PUT: Update existing data
   - DELETE: Delete data
     
-Examample api call:
+Example api call:
 
 ```
 https://msu2u.us/bus/api/v1/user/3
@@ -52,7 +54,53 @@ Where:
     - updateUser = a method in the above class
 
 
-## Add A Controller
+## Controllers
+
+Here is a part of the `UserController` that the above route uses:
+
+```php
+class UserController{
+
+	var $um;
+	
+	function __construct(){
+		$this->um = new UserModel();
+	}
+
+	/**
+	* @Route: /user/
+	* @Description: Gets all users.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/ 
+	*/
+	public function getUsers ($request, $response, $args) {
+
+		return $this->sendResponse($response,$this->um->getUsers());
+
+	}
+
+	/**
+	* @Route: /user/
+	* @Description: Gets a single user.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/{id}
+	*/
+	public function getUser ($request, $response, $args) {
+
+		return $this->sendResponse($response,$this->um->getUser($args['id']));
+
+	}
+	
+```
+
+First of all a controller is meant as a means of "connecting" two or more things. Typically a route has a controller in order to attach functionality to the route. The controller can be used in may ways, it's typically used to get data (possibly from multiple sources), format the data,  pass the data on to something. 
+
+In order to get data we need a data source. In our case, were using mysql. That's why this line is in the constructor: `$this->um = new UserModel();` It creates an instance of a model (which connects to our database), thereby "connecting" us to the data. The route determines what we do with the data (GET, PUT, POST, DELET). And the parameters (args) determines which rows in the database get manipulated. 
+
+Each method receives three parameters: `$request`, `$response`, and `$args`. I won't get into each of the params right now, but 
+I will mention the `$args` param. This is an [associative array](http://php.net/manual/en/language.types.array.php) that contains each of the parameters passed in from the route. 
+
+The route: `https://msu2u.us/bus/api/v1/user/{id}` calls the appropriate class method and makes the user id available like so: `$args['id']`
 
 
-## Add A Model
+## Models
+
+
