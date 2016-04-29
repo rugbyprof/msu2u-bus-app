@@ -119,11 +119,11 @@ return
     );
 
 //This is just a standardized response method to package retreived data or an appropriated message in json
-//and send it back to the requester.
+//and send it back to the requester. We could make this way more robust, but keeping it simple right now.
 private function sendResponse($response,$results){
-	return $response->withStatus(200)
-		->withHeader('Content-Type', 'application/json')
-		->write(json_encode($results));
+	return $response->withStatus(200)				//Status 200 means everythings ok
+		->withHeader('Content-Type', 'application/json')	//add a json header to "type" the return data
+		->write(json_encode($results));				//add our response data
 }
 ```
 
