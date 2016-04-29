@@ -93,12 +93,40 @@ class UserController{
 
 First of all a controller is meant as a means of "connecting" two or more things. Typically a route has a controller in order to attach functionality to the route. The controller can be used in may ways, it's typically used to get data (possibly from multiple sources), format the data,  pass the data on to something. 
 
-In order to get data we need a data source. In our case, were using mysql. That's why this line is in the constructor: `$this->um = new UserModel();` It creates an instance of a model (which connects to our database), thereby "connecting" us to the data. The route determines what we do with the data (GET, PUT, POST, DELET). And the parameters (args) determines which rows in the database get manipulated. 
+In order to get data we need a data source. In our case, were using mysql. That's why this line is in the constructor:
+```php
+$this->um = new UserModel();
+```
+It creates an instance of a model (which connects to our database), thereby "connecting" us to the data. The route determines what we do with the data (GET, PUT, POST, DELET). And the parameters (args) determines which rows in the database get manipulated. 
 
 Each method receives three parameters: `$request`, `$response`, and `$args`. I won't get into each of the params right now, but 
 I will mention the `$args` param. This is an [associative array](http://php.net/manual/en/language.types.array.php) that contains each of the parameters passed in from the route. 
 
-The route: `https://msu2u.us/bus/api/v1/user/{id}` calls the appropriate class method and makes the user id available like so: `$args['id']`
+The route: `https://msu2u.us/bus/api/v1/user/{id}` calls the appropriate class method and makes the user id available like so: `$args['id']`. It uses the `id` in the `$args` array to make this call:
+```php
+return $this->sendResponse($response,$this->um->getUser($args['id']));
+```
+
+So lets break this line down:
+```php
+return 
+    //build a response object
+    $this->sendResponse(
+    	//using the existing reponse object passed in
+        $response,
+        //Call the user model and get the user data based on the id
+        $this->um->getUser($args['id'])
+    );
+
+//This is just a standardized response method to package retreived data or an appropriated message in json
+//and send it back to the requester.
+private function sendResponse($response,$results){
+	return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($results));
+}
+```
+
 
 
 ## Models
