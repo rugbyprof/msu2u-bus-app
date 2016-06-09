@@ -42,9 +42,34 @@
                     return;
                 }
 
+				
                 function success(position) {
                     var latitude  = position.coords.latitude;
                     var longitude = position.coords.longitude;
+				    
+				    userID = 101;	//Get user identifier somehow
+					url = "https://msu2u.us/bus/api/v1/user/" + userID; //were we send the data
+					
+					//data were sending
+					data = {
+						"current_lat":latitude,
+						"current_lon":longitude
+					};
+					
+
+					$.ajax({
+					  type: "PUT",
+					  url: url,
+					  data: data,
+					  success: function(response){
+					  	console.log(response);
+// 					  	if(!response.success){
+// 					  		alert("Error!!!!!");
+// 					  	}else{
+// 					  		alert("Success~!!!!");
+// 					  	}
+					  }
+					});
 
                     output.innerHTML = '<p>Latitude is ' + latitude + '° <br>Longitude is ' + longitude + '°</p>';
 
@@ -53,6 +78,8 @@
 
                     output.appendChild(img);
                 };
+                
+                
 
                 function error() {
                     output.innerHTML = "Unable to retrieve your location";

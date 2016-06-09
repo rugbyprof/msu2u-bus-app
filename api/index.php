@@ -6,110 +6,170 @@ require './vendor/autoload.php';
 // Have to set the timezone else php cries like a little bitch.
 date_default_timezone_set("America/Chicago");
 
+
+$configuration = [
+    'settings' => [
+        'displayErrorDetails' => true,
+	    'determineRouteBeforeAppMiddleware' => true
+    ],
+];
+
+$c = new \Slim\Container($configuration);
+$app = new \Slim\App($c);
+
 /****************************************************************************************************
-* Routes
+* ROUTES
 ****************************************************************************************************/
 
-$app = new \Slim\App();
 
-//curl -X GET https://msu2u.us/bus/api/v1/ --user root:t00r
-// $app->add(new \Slim\Middleware\HttpBasicAuthentication([
-//     "path" => "/v1", /* or ["/admin", "/api"] */
-//     "realm" => "Protected",
-//     "users" => [
-//         "root" => "t00r",
-//         "user" => "passw0rd"
-//     ],
-//     "callback" => function ($request, $response, $arguments) {
-//         print_r($arguments);
-//     },
-// 	"error" => function ($request, $response, $arguments) {
-//         $data = [];
-//         $data["status"] = "error";
-//         $data["message"] = $arguments["message"];
-//         return $response->write(json_encode($data, JSON_UNESCAPED_SLASHES));
-//     }
-// ]));
-
-
-
+$app->get('/','base');
 $app->group('/v1', function () use ($app) {
-	$app->get('/','base');
-    $app->get('/user/', '\UserController:getUsers');
-    $app->get('/user/{id}', '\UserController:getUser');
-    $app->get('/menu/', '\MenuController:getMenus');
-    $app->get('/menu/{id}', '\MenuController:getMenuItems');
-    $app->post('/user/', '\UserController:addUser');
-    $app->post('/menu/', '\MenuController:createMenu');
-    $app->post('/menu/{id}', '\MenuController:addMenuItem');
-    $app->put('/user/{id}', '\UserController:updateUser');
-    $app->delete('/user/{id}', '\UserController:deleteUser');
-    $app->delete('/menu/{menuId}[/{itemId}]', '\MenuController:deleteMenu');
+	$app->get('/','v1base');
+    $app->get('/users/', '\UserController:getUsers');
+    $app->get('/users/{id}', '\UserController:getUser');
+    $app->get('/menus/', '\MenuController:getMenus');
+    $app->get('/menus/{id}', '\MenuController:getMenuItems');
+    $app->get('/routes[/{id}]','MapController:getRoutes');
+	$app->get('/bus_stops[/{id}]','MapController:getBusStops');
+	$app->get('/gps_points/{type}/{id}','MapController:getGpsPoints');
+    $app->post('/users/', '\UserController:addUser');
+    $app->post('/menus/', '\MenuController:createMenu');
+    $app->post('/menus/{id}', '\MenuController:addMenuItem');
+    $app->put('/users/{id}', '\UserController:updateUser');
+    $app->delete('/users/{id}', '\UserController:deleteUser');
+    $app->delete('/menus/{menuId}[/{itemId}]', '\MenuController:deleteMenu');
+	//$app->get('/[{path:.*}]', function($request, $response, $path = null) {
+	//	return $response->write($path ? 'subroute' : 'index');
+	//});
 });
+
 
 $app->run();
 
 
+function base ($request, $response, $args) {
+    
+    v1base($request, $response, $args);
+}
+
 /**
 * @Route: /user/
 * @Description: Gets all users.
-* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/ 
+* @Example: curl -X GET https://msu2u.us/bus/api/v1/
 */
-function base ($request, $response, $args) {
-	$key = "supersecretkey";
-	$token = array(
-		"iss" => "http://msu2u.us",
-		"aud" => "http://msu2u.us",
-		"iat" => 1356999524,
-		"nbf" => 1357000000,
-		"scopes"=> ["menu", "user"] 
-	);
-	
-	echo"<pre>";
+function v1base ($request, $response, $args) {
+	global $app;
 
+	$base_url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+	
+	$routes = $app->getContainer()->get('router')->getRoutes();
+	$route_list = [];
+
+	foreach($routes as $key =>$route){
+		$method = $route->getMethods();
+		$pattern = $route->getPattern();
+		$pattern = substr($pattern,4);
+		$route_list[$method[0]][] = $base_url.$pattern;
+
+	}
+
+	return $response->withStatus(200)
+		->withHeader('Content-Type', 'application/json')
+		->write(json_encode($route_list));
+}
+
+
+
+
+/****************************************************************************************************
+* CONTROLLERS
+****************************************************************************************************/
+
+/**************************************************
+* @Class: MapController
+* @Description:
+*		This controller interacts with the map model and directs all things maps.
+* @Methods:
+* 	getRoute() 		- GET gets info and points for a bus route
+* 	getRoutes() 	- GET gets all routes
+***************************************************/
+class MapController{
+
+	var $um;
+	
+	function __construct(){
+		$this->mm = new MapModel();
+	}
+	
 	/**
-	 * IMPORTANT:
-	 * You must specify supported algorithms for your application. See
-	 * https://tools.ietf.org/html/draft-ietf-jose-json-web-algorithms-40
-	 * for a list of spec-compliant algorithms.
-	 */
-	$jwt = JWT::encode($token, $key);
-	
-	print_r($jwt);
-	
-	$decoded = JWT::decode($jwt, $key, array('HS256'));
-
-
-	/*
-	 NOTE: This will now be an object instead of an associative array. To get
-	 an associative array, you will need to cast it as such:
+	* @Route: /route/
+	* @Description: Gets all routes.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/routes/{id}
 	*/
+	public function getRoutes ($request, $response, $args) {
 
-	$decoded_array = (array) $decoded;
+		if(isset($args['id'])){
+			return $this->sendResponse($response,$this->mm->getRoutes($args['id']));
+		}else{
+			return $this->sendResponse($response,$this->mm->getRoutes());
+		}
+
+	}
 	
-	print_r($decoded);
-
-
 	/**
-	 * You can add a leeway to account for when there is a clock skew times between
-	 * the signing and verifying servers. It is recommended that this leeway should
-	 * not be bigger than a few minutes.
-	 *
-	 * Source: http://self-issued.info/docs/draft-ietf-oauth-json-web-token.html#nbfDef
-	 */
-	JWT::$leeway = 60; // $leeway in seconds
-	$decoded = JWT::decode($jwt, $key, array('HS256'));
+	* @Route: /bus_stop/
+	* @Description: Gets all or 1 bus stop.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/bus_stops/{id}
+	*/
+	public function getBusStops ($request, $response, $args) {
+
+		if(isset($args['id'])){
+			return $this->sendResponse($response,$this->mm->getBusStops($args['id']));
+		}else{
+			return $this->sendResponse($response,$this->mm->getBusStops());
+		}
+
+	}
 	
-	print_r((array)$decoded);
+	/**
+	* @Route: /gps_points/
+	* @Description: Gets gps points associated with a set of stops or a route.
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/gps_points/{type}[/{id}]
+	*/
+	public function getGpsPoints ($request, $response, $args) {
+		
+		if(!isset($args['type']) || !isset($args['id'])){
+			return json_encode(['success'=>false,'reason'=>'This route needs a \'type\' (route,bus_stop) and an \'id\'.']);
+		}
+		return $this->sendResponse($response,$this->mm->getGpsPoints($args));
+
+	}
 	
+	
+	/**
+	* @Function: sendResponse
+	* @Description: Packages up a response to send back to a request
+	*/
+	private function sendResponse($response,$results){
+		return $response->withStatus(200)
+			->withHeader('Content-Type', 'application/json')
+			->write(json_encode($results));
+	}
 	
 }
 
-/****************************************************************************************************
-* User Controllers
-****************************************************************************************************/
 
-
+/**************************************************
+* @Class: UserController
+* @Description:
+*		This controller interacts with the user model and directs all things user.
+* @Methods:
+* 	getUsers() 		- GET gets all users
+*	getUser(int) 	- GET gets a single user based on id
+*   addUser(json) 	- POST adds a user to the db
+*   updateUser(json)- PUT updates an existing user
+*   deleteUser(int) - DELETE deletes a user
+***************************************************/
 class UserController{
 
 	var $um;
@@ -121,7 +181,7 @@ class UserController{
 	/**
 	* @Route: /user/
 	* @Description: Gets all users.
-	* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/ 
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/users/ 
 	*/
 	public function getUsers ($request, $response, $args) {
 
@@ -132,7 +192,7 @@ class UserController{
 	/**
 	* @Route: /user/
 	* @Description: Gets a single user.
-	* @Example: curl -X GET https://msu2u.us/bus/api/v1/user/{id}
+	* @Example: curl -X GET https://msu2u.us/bus/api/v1/users/{id}
 	*/
 	public function getUser ($request, $response, $args) {
 
@@ -143,7 +203,7 @@ class UserController{
 	/**
 	* @Route: /user/
 	* @Description: Adds a single user.
-	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/user/ -d '{"fname": "Joe","lname": "Bob","user_type": "1","current_lat": "33.123","current_lon": "98.3434"}' 
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/users/ -d '{"fname": "Joe","lname": "Bob","user_type": "1","current_lat": "33.123","current_lon": "98.3434"}' 
 	*/
 	public function addUser ($request, $response, $args) {
 
@@ -158,8 +218,8 @@ class UserController{
 	/**
 	* @Route: /user/
 	* @Description: Adds a single user.
-	* @Example: curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/{id} -d '{"lname": "Cobby","user_type": "2"}' 
-	*            curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/user/101 -d '{"lname": "Flabby","user_type": "1","current_lat": "33.88878"}'
+	* @Example: curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/users/{id} -d '{"lname": "Cobby","user_type": "2"}' 
+	*            curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/users/101 -d '{"lname": "Flabby","user_type": "1","current_lat": "33.88878"}'
 	*/
 	public function updateUser ($request, $response, $args) {
 
@@ -175,7 +235,7 @@ class UserController{
 	/**
 	* @Route: /user/
 	* @Description: Deletes a single user.
-	* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
+	* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/users/{id}
 	*/
 	public function deleteUser ($request, $response, $args) {
 
@@ -185,6 +245,11 @@ class UserController{
 				
 	}
 	
+	
+	/**
+	* @Function: sendResponse
+	* @Description: Packages up a response to send back to a request
+	*/
 	private function sendResponse($response,$results){
 		return $response->withStatus(200)
 			->withHeader('Content-Type', 'application/json')
@@ -193,12 +258,18 @@ class UserController{
 }
 
 
-
-/****************************************************************************************************
-* Menu Controllers
-****************************************************************************************************/
-
-
+/**************************************************
+* @Class: MenuController
+* @Description:
+*		This controller interacts with the menu model and does all things menu
+* @Methods:
+* 	getMenus() 			- GET gets all menus
+*	getMenuItems(int) 	- GET gets a single menu based on id
+*   createMenu(json) 	- POST adds a menu to the db
+*   addMenuItem(json)	- PUT updates an existing menu
+*   deleteMenu(int) 	- DELETE deletes a menu
+*   deleteMenuItem(int,int) - needed
+***************************************************/
 class MenuController{
 	var $mm;
 	
@@ -231,7 +302,7 @@ class MenuController{
 	/**
 	* @Route: /menus/
 	* @Description: Gets all menus.
-	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menus/ -d '{"":""}'
 	*/
 	public function createMenu($request, $response, $args) {
 	
@@ -244,7 +315,7 @@ class MenuController{
 	/**
 	* @Route: /menus/
 	* @Description: Gets all menus.
-	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menu/ -d '{"":""}'
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/menus/ -d '{"":""}'
 	*/
 	public function addMenuItem($request, $response, $args) {
 	
@@ -257,7 +328,7 @@ class MenuController{
 	/**
 	* @Route: /user/
 	* @Description: Deletes a single user.
-	* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/user/{id}
+	* @Example: curl -X DELETE https://msu2u.us/bus/api/v1/users/{id}
 	*/
 	public function deleteMenu ($request, $response, $args) {
 	
@@ -281,8 +352,86 @@ class MenuController{
 
 
 /****************************************************************************************************
-* Models
+* MODELS
 ****************************************************************************************************/
+
+/**
+* This interfaces with the menus table.
+* 
+* @Method: array getRoutes()
+*		
+*/
+class MapModel{
+  /**
+   * @var resource $db  database connection resource
+   */
+    var $db;
+    var $response;        
+    
+	function __construct(){
+		$this->db = new dbManager();
+	}
+	
+	
+  /**
+   * Gets all the points in one route.
+   * @Return array
+   */	
+	public function getRoutes($id=null){
+	
+		if($id){
+			$temp1 = $this->db->fetch('select * from bus_routes where id = ?',array($id));
+			$temp2 = $this->db->fetch('select * from bus_route_points where route_id = ?',array($id));
+			$data['success'] = $temp1['success'] && $temp2['success'];
+			foreach($temp1['data'][0] as $k => $v){
+				$data['route_info'][$k] = $v;
+			}
+			$data['points'] = $temp2['data'];
+			return $data;
+		}else{
+			return $this->db->fetch('select * from bus_routes');
+		}
+		
+	}
+	
+  /**
+   * Gets all the bus stops for a route or just all the bus stops.
+   * @Return array
+   */	
+	public function getBusStops($id=null){
+	
+		if($id){
+			$temp = $this->db->fetch('select * from bus_stops where route_id = ?',array($id));
+		}else{
+			$temp = $this->db->fetch('select * from bus_stops');
+		}
+		
+		$data['success'] = $temp['success'];
+		$data['points'] = $temp['data'];
+		return $data;
+		
+	}
+	
+  /**
+   * Gets all the gps points associated with a set of bus stops, or a route.
+   * @Return array
+   */	
+	public function getGpsPoints($args){
+	
+		if($args['type'] == 'route'){
+			$temp = $this->db->fetch('select * from bus_route_points where route_id = ?',array($args['id']));
+		}else{//type==bus_stop
+			$temp = $this->db->fetch('select * from bus_stops where route_id = ?',array($args['id']));
+		}
+
+		
+		$data['success'] = $temp['success'];
+		$data['points'] = $temp['data'];
+		return $data;
+		
+	}
+	
+}
 
 /**
 * This interfaces with the menus table.
@@ -551,4 +700,5 @@ class ErrorHelp{
 		file_put_contents($this->path,"\n",FILE_APPEND);
 	}
 }
+
 
