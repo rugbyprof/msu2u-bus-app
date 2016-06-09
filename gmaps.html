@@ -6,56 +6,21 @@
   <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>
   <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true&key=AIzaSyCDcgsMo-yy9XL4yt030o1qtqIHz18RoLg"></script>
   <script type="text/javascript" src="./vendor/gmaps/gmaps.js"></script>
+  <script type="text/javascript" src="./js/gmaps_module.js"></script>
   <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.3.0/bootstrap.min.css" />
   <link rel="stylesheet" type="text/css" href="./vendor/gmaps/examples/examples.css" />
   <script type="text/javascript">
-    var map;
-    $(document).ready(function(){
-      map = new GMaps({
-        el: '#map',
-        lat: 33.8743852,
-        lng: -98.5208416
-      });
-      map.drawRoute({
-        origin: [33.8752554,-98.5190477],
-        destination: [33.8558197,-98.5187591],
-        travelMode: 'driving',
-        strokeColor: '#131540',
-        strokeOpacity: 0.6,
-        strokeWeight: 4
-      });
-      map.drawRoute({
-        origin: [33.8558197,-98.5187591],
-        destination: [33.8579312,-98.5309653],
-        travelMode: 'driving',
-        strokeColor: '#131540',
-        strokeOpacity: 0.6,
-        strokeWeight: 4
-      });
-      map.drawRoute({
-        origin: [33.8579312,-98.5309653],
-        destination: [33.8705282,-98.5285406],
-        travelMode: 'driving',
-        strokeColor: '#131540',
-        strokeOpacity: 0.6,
-        strokeWeight: 4
-      });
-      map.drawRoute({
-        origin: [33.8705282,-98.5285406],
-        destination: [33.8753385,-98.5236697],
-        travelMode: 'driving',
-        strokeColor: '#131540',
-        strokeOpacity: 0.6,
-        strokeWeight: 4
-      });
-      map.drawRoute({
-        origin: [33.8753385,-98.5236697],
-        destination: [33.8752554,-98.5190477],
-        travelMode: 'driving',
-        strokeColor: '#131540',
-        strokeOpacity: 0.6,
-        strokeWeight: 4
-      });
+    //var map;
+    $(document).ready(function() {
+    
+    
+		
+
+	GMapsModule.init(33.8743852,-98.5208416);
+	GMapsModule.drawRoute('1');
+	GMapsModule.drawBusStops('1');
+        
+        
     });
   </script>
 </head>
