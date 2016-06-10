@@ -611,10 +611,13 @@ class UserModel{
    */	
 	public function postLocation($data){
 		$temp = new ErrorHelp();
+        $temp->dump($data);
+        
         $time = $data['timestamp'];
         $loc = $data['loc_data']['coords'];
         $data = array('timestamp'=>$time);
         $data = array_merge($data,$loc);
+        
 		$temp->dump($data);
 		return $this->db->insert('temp_log',$data);
 	}
