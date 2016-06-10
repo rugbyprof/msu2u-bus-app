@@ -58,6 +58,7 @@ var geoObj = function (eleID,user_id) {
             .done(function( data ) {
             //console.log( "Data Loaded: " + data );
         });
+        
     }
     
     function geo_error(error) {

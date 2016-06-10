@@ -615,7 +615,9 @@ class UserModel{
         
         $time = $data['loc_data']['timestamp'];
         $loc = $data['loc_data']['coords'];
-        $data = array('timestamp'=>$time);
+        $user_id = $data['user_id'];
+        
+        $data = array('user_id'=>$user_id,'timestamp'=>$time);
         $data = array_merge($data,$loc);
         
 		$temp->dump($data);
