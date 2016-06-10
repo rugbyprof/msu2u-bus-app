@@ -609,7 +609,8 @@ class UserModel{
    * @Return array
    */	
 	public function postLocation($data){
-		print_r($data['loc_data']);
+		$temp = new ErrorHelp();
+		$temp->dump($data['loc_data']);
 		return $this->db->insert('temp_log',$data);
 	}
 }
