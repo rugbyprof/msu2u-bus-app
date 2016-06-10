@@ -260,7 +260,7 @@ class UserController{
 	/**
 	* @Route: /logUser/{id}
 	* @Description: Logs a user location.
-	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/logUser/ -d '{"id":"99","speed": "55","altitude": "2000","current_lat": "33.123","current_lon": "98.3434"}' 
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/logUser/ -d '{"user_id":"99","loc_data":{"speed": "55","altitude": "2000","current_lat": "33.123","current_lon": "98.3434"}}' 
 	*/
 	public function logUser ($request, $response, $args) {
 
@@ -608,7 +608,8 @@ class UserModel{
    * @Param array data
    * @Return array
    */	
-	public function postLocation($data){		
+	public function postLocation($data){
+		print_r($data['loc_data']);
 		return $this->db->insert('temp_log',$data);
 	}
 }
@@ -726,5 +727,6 @@ class ErrorHelp{
 		file_put_contents($this->path,"\n",FILE_APPEND);
 	}
 }
+
 
 
