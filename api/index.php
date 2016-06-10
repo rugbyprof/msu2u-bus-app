@@ -613,7 +613,7 @@ class UserModel{
 		$temp = new ErrorHelp();
         $time = $data['timestamp'];
         $loc = $data['loc_data']['coords'];
-        $data = array('time'=>$time);
+        $data = array('timestamp'=>$time);
         $data = array_merge($data,$loc);
 		$temp->dump($data);
 		return $this->db->insert('temp_log',$data);
