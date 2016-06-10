@@ -611,7 +611,7 @@ class UserModel{
    */	
 	public function postLocation($data){
 		$temp = new ErrorHelp();
-		$data['loc_data'] = json_encode($data['loc_data']);
+		$data['loc_data'] = json_encode($data['loc_data']['coords']);
 		$temp->dump($data['loc_data']);
 		return $this->db->insert('temp_log',$data);
 	}
