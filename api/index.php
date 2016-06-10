@@ -33,7 +33,7 @@ $app->group('/v1', function () use ($app) {
 	$app->get('/bus_stops[/{id}]','MapController:getBusStops');
 	$app->get('/gps_points/{type}/{id}','MapController:getGpsPoints');
     $app->post('/users/', '\UserController:addUser');
-	$app->post('/logUser/{id}','\UserController:logUser');
+	$app->post('/logUser/','\UserController:logUser');
     $app->post('/menus/', '\MenuController:createMenu');
     $app->post('/menus/{id}', '\MenuController:addMenuItem');
     $app->put('/users/{id}', '\UserController:updateUser');
