@@ -51,7 +51,7 @@ var geoObj = function (eleID,user_id) {
     
     function log_position(user_id,position){
         
-        $.post( "https://msu2u.us/bus/api/v1/logUser/", { user_id: user_id, loc_data: position})
+        $.post( "http://msu2u.us/bus/api/v1/logUser/", { user_id: user_id, loc_data: position})
             .done(function( data ) {
             console.log( "Data Loaded: " + data );
         });
