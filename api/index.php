@@ -613,7 +613,8 @@ class UserModel{
 		$temp = new ErrorHelp();
         $time = $data['timestamp'];
         $loc = $data['loc_data']['coords'];
-		$data = json_encode(array('timestamp'=>$time,$loc));
+        $data = array('time'=>$time);
+        $data = array_merge($data,$loc);
 		$temp->dump($data);
 		return $this->db->insert('temp_log',$data);
 	}
