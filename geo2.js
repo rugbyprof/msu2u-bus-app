@@ -9,7 +9,7 @@ var geoObj = function (eleID) {
     var min_altitude = 0;
     var max_altitude = 0;
     var distance_travelled = 0;
-    var min_accuracy = 150;
+    var min_accuracy = 150000;
     var date_pos_updated = "";
     var info_string = "";
     var wpid = null;
@@ -22,7 +22,7 @@ var geoObj = function (eleID) {
         return time_component;
     }
     function geo_success(position) {
-        info_string = "";
+        //info_string = "";
         var d = new Date();
         var h = d.getHours();
         var m = d.getMinutes();
@@ -41,16 +41,16 @@ var geoObj = function (eleID) {
                 prev_lat = position.coords.latitude;
                 prev_long = position.coords.longitude;
                 info_string = "Current positon: lat=" + position.coords.latitude + ", long=" + position.coords.longitude + " (accuracy " + Math.round(position.coords.accuracy, 1) + "m)<br />Speed: min=" + (min_speed ? min_speed : "Not recorded/0") + "m/s, max=" + (max_speed ? max_speed : "Not recorded/0") + "m/s<br />Altitude: min=" + (min_altitude ? min_altitude : "Not recorded/0") + "m, max=" + (max_altitude ? max_altitude : "Not recorded/0") + "m (accuracy " + Math.round(position.coords.altitudeAccuracy, 1) + "m)<br />last reading taken at: " + current_datetime;
-            }
+            }            
         } else {
             info_string = "Accuracy not sufficient (" + Math.round(position.coords.accuracy, 1) + "m vs " + min_accuracy + "m) - last reading taken at: " + current_datetime;
         }
-        op.innerHTML = info_string;
+        document.getElementById(eleID).innerHTML = info_string;
     }
     function geo_error(error) {
         switch (error.code) {
             case error.TIMEOUT:
-                op.innerHTML = "Timeout!";
+                this.op.innerHTML = "Timeout!";
                 break;
         };
     }
@@ -63,27 +63,24 @@ var geoObj = function (eleID) {
                 timeout: 27000
             });
         else{
-            op.innerHTML = "ERROR: Your Browser doesnt support the Geo Location API";
+            this.op.innerHTML = "ERROR: Your Browser doesnt support the Geo Location API";
         }
     }
 
     function init_geo(eleID) {
-        op = document.getElementById(eleID);
-        console.log(op);
-
         if (wpid) {
-            op.innerHTML = "Starting...";
+            document.getElementById(eleID).innerHTML = "Starting...";
             navigator.geolocation.clearWatch(wpid);
             wpid = false;
         } else {
-            op.innerHTML = "Aquiring Geo Location...";
+            document.getElementById(eleID).innerHTML = "Aquiring Geo Location...";
             get_pos();
         }
             
     }
     init_geo(eleID);
-return {
-    get_pos: get_pos,
+    return {
+        get_pos: get_pos,
     }
 };
 
