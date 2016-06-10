@@ -266,6 +266,7 @@ class UserController{
 
 		//Get the posted data from the request
 		$data = $request->getParsedBody();
+
 		
 		//Add the user and send the response
 		return $this->sendResponse($response,$this->um->postLocation($data));
@@ -672,7 +673,6 @@ class dbManager{
 		$this->db->update($table,$data);
 		
 				
-	
 		if($this->db->count){
 			$this->response['success'] = true;
 			$this->response['count'] = $this->db->count;

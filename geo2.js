@@ -49,11 +49,14 @@ var geoObj = function (eleID,user_id) {
         document.getElementById(eleID).innerHTML = info_string;
     }
     
+    /**
+    * 
+    */
     function log_position(user_id,position){
         
         $.post( "http://msu2u.us/bus/api/v1/logUser/", { user_id: user_id, loc_data: position})
             .done(function( data ) {
-            console.log( "Data Loaded: " + data );
+            //console.log( "Data Loaded: " + data );
         });
     }
     
@@ -88,7 +91,9 @@ var geoObj = function (eleID,user_id) {
         }
             
     }
+    
     init_geo(eleID);
+    
     return {
         get_pos: get_pos
     }
