@@ -80,10 +80,8 @@ var geoObj = function (eleID) {
     }
     init_geo(eleID);
     return {
-        get_pos: get_pos,
+        get_pos: get_pos
     }
 };
 
-var temp = geoObj("output");
-temp.get_pos();
-console.log(temp);
+

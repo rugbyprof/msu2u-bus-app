@@ -33,6 +33,7 @@ $app->group('/v1', function () use ($app) {
 	$app->get('/bus_stops[/{id}]','MapController:getBusStops');
 	$app->get('/gps_points/{type}/{id}','MapController:getGpsPoints');
     $app->post('/users/', '\UserController:addUser');
+	$app->post('/logUser/{id}','\UserController:logUser');
     $app->post('/menus/', '\MenuController:createMenu');
     $app->post('/menus/{id}', '\MenuController:addMenuItem');
     $app->put('/users/{id}', '\UserController:updateUser');
@@ -255,6 +256,21 @@ class UserController{
 			->withHeader('Content-Type', 'application/json')
 			->write(json_encode($results));
 	}
+	
+	/**
+	* @Route: /logUser/{id}
+	* @Description: Logs a user location.
+	* @Example: curl -H "Content-Type: application/json" -X POST https://msu2u.us/bus/api/v1/logUser/ -d '{"id":"99","speed": "55","altitude": "2000","current_lat": "33.123","current_lon": "98.3434"}' 
+	*/
+	public function logUser ($request, $response, $args) {
+
+		//Get the posted data from the request
+		$data = $request->getParsedBody();
+		
+		//Add the user and send the response
+		return $this->sendResponse($response,$this->um->postLocation($data));
+		
+	}
 }
 
 
@@ -354,6 +370,7 @@ class MenuController{
 /****************************************************************************************************
 * MODELS
 ****************************************************************************************************/
+
 
 /**
 * This interfaces with the menus table.
@@ -584,6 +601,15 @@ class UserModel{
 	public function deleteUser($id){
 		return $this->db->delete('users',['id'=>$id]);
 
+	}
+	
+  /**
+   * Adds a new location log to the system
+   * @Param array data
+   * @Return array
+   */	
+	public function postLocation($data){		
+		return $this->db->insert('temp_log',$data);
 	}
 }
 
