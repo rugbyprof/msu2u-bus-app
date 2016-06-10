@@ -613,7 +613,7 @@ class UserModel{
 		$temp = new ErrorHelp();
         $temp->dump($data);
         
-        $time = $data['timestamp'];
+        $time = $data['loc_data']['timestamp'];
         $loc = $data['loc_data']['coords'];
         $data = array('timestamp'=>$time);
         $data = array_merge($data,$loc);
