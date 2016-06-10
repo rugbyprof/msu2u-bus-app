@@ -1,4 +1,4 @@
-var geoObj = function (eleID) {
+var geoObj = function (eleID,user_id) {
     var map = 0;
     var z = 0;
     var op = 0;
@@ -41,12 +41,22 @@ var geoObj = function (eleID) {
                 prev_lat = position.coords.latitude;
                 prev_long = position.coords.longitude;
                 info_string = "Current positon: lat=" + position.coords.latitude + ", long=" + position.coords.longitude + " (accuracy " + Math.round(position.coords.accuracy, 1) + "m)<br />Speed: min=" + (min_speed ? min_speed : "Not recorded/0") + "m/s, max=" + (max_speed ? max_speed : "Not recorded/0") + "m/s<br />Altitude: min=" + (min_altitude ? min_altitude : "Not recorded/0") + "m, max=" + (max_altitude ? max_altitude : "Not recorded/0") + "m (accuracy " + Math.round(position.coords.altitudeAccuracy, 1) + "m)<br />last reading taken at: " + current_datetime;
+                log_position("99",position);
             }            
         } else {
             info_string = "Accuracy not sufficient (" + Math.round(position.coords.accuracy, 1) + "m vs " + min_accuracy + "m) - last reading taken at: " + current_datetime;
         }
         document.getElementById(eleID).innerHTML = info_string;
     }
+    
+    function log_position(user_id,position){
+        
+        $.post( "https://msu2u.us/bus/api/v1/logUser/", { user_id: user_id, loc_data: position})
+            .done(function( data ) {
+            console.log( "Data Loaded: " + data );
+        });
+    }
+    
     function geo_error(error) {
         switch (error.code) {
             case error.TIMEOUT:
