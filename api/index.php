@@ -619,7 +619,7 @@ class UserModel{
         $data = array_merge($data,$loc);
         
 		$temp->dump($data);
-		return $this->db->insert('temp_log',$data);
+		return $this->db->insert('location_log',$data);
 	}
 }
 
