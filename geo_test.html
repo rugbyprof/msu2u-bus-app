@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width,initial-scale=1">
+		<title>User Location</title>
+		<link rel="stylesheet" href="themes/Bootstrap.css">
+		<link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.0/jquery.mobile.structure-1.4.0.min.css" />
+        <script   src="https://code.jquery.com/jquery-2.2.4.min.js"   integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44="   crossorigin="anonymous"></script>
+		<link rel="stylesheet" href="themes/jquery.mobile.icons.min.css" />
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+        <script src="geo.js"></script>
+        <style>
+            .container { padding-top: 20px; }
+            #details { font-family: "Quicksand", sans-serif; font-size: 60px; }
+            #home-box > h2 { font-family: "Quicksand", sans-serif; font-weight: 400; line-height: 1.1; color: #75b1ae; }
+            .price { font-size: 25px; float: left; }
+            .pricing_header { background: none repeat scroll 0% 0% rgb(44, 62, 80); border-radius: 5px 5px 0px 0px; transition: background 0.4s ease-out 0s; }
+            .pricing_header h2 { text-align:center; line-height: 25px; padding: 15px 0px; margin: 0px; font-family: "Quicksand", sans-serif; font-weight: 400; color: #75b1ae; }
+            .list-group-item:first-child { border-top-right-radius: 0px; border-top-left-radius: 0px; }
+            .btn { float: right; font-family: "Quicksand", sans-serif; font-weight:500;}
+            .off { text-decoration: line-through; color: rgb(86,86,86); }
+            .space {height: 2px; background-color: #75b1ae;}
+        </style>
+	</head>
+	<body>
+        <script>
+        $(function() {
+            var geoData = null;
+            console.log("whoop");
+            $('#start-btn').click(function(){
+                console.log($('#id-frm-input').val());
+                geoData = geoObj($('#id-frm-input').val());
+                geoData.get_pos();
+            });
+        });
+        </script>
+        <!-- price & service -->
+        <div class="container">
+            <div class="row"><h2 id="details"></h2></div>
+
+            <!-- Pack 1-->
+            <div class="col-md-4" id="home-box">
+            
+                <div class="pricing_header">
+                    <h2>Location Data</h2>
+                    <div class="space"></div>
+                </div>
+                <ul class="list-group">
+                    <li class="list-group-item"></span> <b>Lat-Lon:</b> <span id="latlon"></span></li>
+                    <li class="list-group-item"></span> <b>Accuracy:</b> <span id="accuracy"></span></li>
+                    <li class="list-group-item"></span> <b>Min Speed:</b> <span id="minspeed"></span></li>
+                    <li class="list-group-item"></span> <b>Max Speed:</b> <span id="maxspeed"></span></li>
+                    <li class="list-group-item"></span> <b>Min Altitude:</b> <span id="minaltitude"></span></li>
+                    <li class="list-group-item"></span> <b>Max Altitude:</b> <span id="maxaltitude"></span></li>
+                    <li class="list-group-item"></span> <b>Altitude Accuracy:</b> <span id="accuracy_alt"></span></li>
+                    <li class="list-group-item"></span> <b>Updated:</b> <span id="updated"></span></li>
+                </ul>
+                <table>
+                <tr><td><input type="text" class="form-control" id="id-frm-input" placeholder="Enter Your Id"></td><td><a class="btn btn-default" href="#" type="button" id="start-btn">Start</a></td></tr>
+                </table>
+                </div>
+            </div>
+
+
+
+        </div>
+
+    </body>
+</html>
