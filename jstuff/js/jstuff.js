@@ -1,5 +1,15 @@
 
-
+$(function(){
+    $.getJSON("https://msu2u.us/bus/api/v1/menus/1",function(json){
+        var items = [];
+        var menulist = "";
+        $.each(json.data, function(key,val){
+            console.log(json.data[key]);
+            menulist = menulist + "<li> <a href= " + json.data[key].link + ">" + json.data[key].text + "</li>";
+        });
+        $("#yam").html(menulist);
+    });
+});
 
 function myFunction() {
     document.getElementById("myDropdown").classList.toggle("show");
