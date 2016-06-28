@@ -1,0 +1,130 @@
+<!doctype html>
+<html>
+	<head>
+		<style>
+			#map {
+				width: 600px;
+				height: 400px;
+			}
+		</style>
+	</head>
+<body>
+    <div id="map"></div>
+
+    <!-- Google Maps JS API -->
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <!-- GMaps Library -->
+    <script src="gmaps.js"></script>
+    <script>
+		var mapObj = new GMaps({
+			el: '#map',
+			lat: 33.865,
+			lng: -98.523,
+			zoom: 14,
+			zoomControl: false,
+			scaleControl: false,
+			scrollwheel: false,
+			disableDoubleClickZoom: true
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.875216, -98.519052],
+			destination: [33.872467, -98.518556],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.872467, -98.518556],
+			destination: [33.867896, -98.518417],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.867896, -98.518417],
+			destination: [33.858485, -98.519821],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.858485, -98.519821],
+			destination: [33.854098, -98.518660],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.854098, -98.518660],
+			destination: [33.857560, -98.522946],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.857560, -98.522946],
+			destination: [33.857917, -98.525789],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.857917, -98.525789],
+			destination: [33.861123, -98.532000],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.861123, -98.532000],
+			destination: [33.867096, -98.529062],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.867096, -98.529062],
+			destination: [33.873023, -98.523623],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.873023, -98.523623],
+			destination: [33.875210, -98.522082],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+		
+		mapObj.drawRoute({
+			origin: [33.875210, -98.522082],
+			destination: [33.875216, -98.519052],
+			travelMode: 'driving',
+			strokeColor: '#600000',
+			strokeOpacity: 0.7,
+			strokeWeight: 5
+		});
+    </script>
+  </body>
+</html>
