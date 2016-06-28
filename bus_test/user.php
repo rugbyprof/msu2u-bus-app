@@ -1,17 +1,25 @@
 <?php
+	//Format some of the data
+	$_POST['pass'] = sha1($_POST['pass']);
+	$_POST['id'] = ucfirst ($_POST['id']);
+	
+	//Curl begins to check on similar IDs
+	$ch = curl_init();
 
-$url = "http://msu2u.us/bus/api/v1/users/";
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	curl_setopt($ch, CURLOPT_URL, "http://msu2u.us/bus/api/v1/users/" . $_POST['id']);
 
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+	$result=curl_exec($ch);
+	curl_close($ch);
 
-// Will return the response, if false it print the response
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	$decode = json_decode($result, true);
 
-curl_setopt($ch, CURLOPT_URL, $url);
-$result=curl_exec($ch);
-curl_close($ch);
-
-// Dump JSON
-var_dump(json_decode($result, true));
+	if ($result == NULL)
+		header('Location: ' . $_SERVER['HTTP_REFERER']);
+	else if ($decode['data'][0]['pass'] == $_POST['pass'])
+		header("Location: https://www.youtube.com/watch?v=dQw4w9WgXcQ");
+	else
+		header("Location: http://www.google.com/");
+	exit;
 ?>

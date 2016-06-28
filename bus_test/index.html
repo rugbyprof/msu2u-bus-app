@@ -15,18 +15,18 @@
   <body>
 	<div class="form">
 		<form class="register-form" method="POST" action="register.php">
-			<input type="text" placeholder="first name" name="fname"/>
-			<input type="text" placeholder="last name" name="lname"/>
-			<input type="text" placeholder="m-number" name="mnumber"/>
-			<input type="password" placeholder="password" name="password" id="password"/>
-			<input type="password" placeholder="re-enter password" name="password_match" id="password_match"/>
-			<input type="text" placeholder="email address" name="email"/>
+			<input pattern="[A-Za-z]{1,32}" title="Please use a valid name" type="text" placeholder="first name" name="fname" required>
+			<input pattern="[A-Za-z]{1,32}" title="Please use a valid name" type="text" placeholder="last name" name="lname" required>
+			<input pattern="[Mm]{1}[0-9]{8}" title="Example M-Number: M12345678" type="text" placeholder="m-number" name="id" required>
+			<input pattern=".{6,}" title="6 characters minimum" type="password" placeholder="password" name="pass"" id="password" required>
+			<input type="password" placeholder="re-enter password" name="pass_match" id="password_match" required>
+			<input type="email" placeholder="email address" name="email" autocomplete="on" required>
 			<button type="submit" onclick="register()">create</button>
 			<p class="message">Already registered? <a href="#">Sign In</a></p>
 		</form>
 		<form class="login-form" method="POST" action="user.php">
-			<input type="text" placeholder="m-number" name="g_mnumber"/>
-			<input type="password" placeholder="password" name="g_password"/>
+			<input pattern="[Mm]{1}[0-9]{8}" title="Example M-Number: M12345678" type="text" placeholder="m-number" name="id" required>
+			<input pattern=".{6,}" title="6 characters minimum" type="password" placeholder="password" name="pass" required>
 			<button type="submit">login</button>
 			<p class="message">Not registered? <a href="#">Create an account</a></p>
 		</form>
