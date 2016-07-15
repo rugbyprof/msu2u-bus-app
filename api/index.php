@@ -24,24 +24,24 @@ $app = new \Slim\App($c);
 
 $app->get('/','base');
 $app->group('/v1', function () use ($app) {
-	$app->get('/','v1base');
+    $app->get('/','v1base');
     $app->get('/users/', '\UserController:getUsers');
     $app->get('/users/{id}', '\UserController:getUser');
     $app->get('/menus/', '\MenuController:getMenus');
     $app->get('/menus/{id}', '\MenuController:getMenuItems');
     $app->get('/routes[/{id}]','MapController:getRoutes');
-	$app->get('/bus_stops[/{id}]','MapController:getBusStops');
-	$app->get('/gps_points/{type}/{id}','MapController:getGpsPoints');
+    $app->get('/bus_stops[/{id}]','MapController:getBusStops');
+    $app->get('/gps_points/{type}/{id}','MapController:getGpsPoints');
     $app->post('/users/', '\UserController:addUser');
-	$app->post('/logUser/','\UserController:logUser');
+    $app->post('/logUser/','\UserController:logUser');
     $app->post('/menus/', '\MenuController:createMenu');
     $app->post('/menus/{id}', '\MenuController:addMenuItem');
     $app->put('/users/{id}', '\UserController:updateUser');
     $app->delete('/users/{id}', '\UserController:deleteUser');
     $app->delete('/menus/{menuId}[/{itemId}]', '\MenuController:deleteMenu');
-	//$app->get('/[{path:.*}]', function($request, $response, $path = null) {
-	//	return $response->write($path ? 'subroute' : 'index');
-	//});
+    //$app->get('/[{path:.*}]', function($request, $response, $path = null) {
+    //	return $response->write($path ? 'subroute' : 'index');
+    //});
 });
 
 
