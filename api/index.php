@@ -165,8 +165,8 @@ class MapController{
 * @Description:
 *		This controller interacts with the user model and directs all things user.
 * @Methods:
-* 	getUsers() 		- GET gets all users
-*	getUser(int) 	- GET gets a single user based on id
+*   getUsers() 		- GET gets all users
+*   getUser(int) 	- GET gets a single user based on id
 *   addUser(json) 	- POST adds a user to the db
 *   updateUser(json)- PUT updates an existing user
 *   deleteUser(int) - DELETE deletes a user
@@ -218,7 +218,7 @@ class UserController{
 
 	/**
 	* @Route: /user/
-	* @Description: Adds a single user.
+	* @Description: Upadtes a single user.
 	* @Example: curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/users/{id} -d '{"lname": "Cobby","user_type": "2"}' 
 	*            curl -H "Content-Type: application/json" -X PUT https://msu2u.us/bus/api/v1/users/101 -d '{"lname": "Flabby","user_type": "1","current_lat": "33.88878"}'
 	*/
